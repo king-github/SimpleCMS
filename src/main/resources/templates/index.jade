@@ -1,0 +1,15 @@
+html
+  head
+    title Simple Jade
+    link(rel="Stylesheet" type="text/css" href="/public/css/style.css")
+  body
+
+    img(src="/public/images/logo.png")
+    h1 Home page
+    p Current time: #{date}
+
+    ul
+      for item in items
+        li #{item}
+      else
+        li No items
