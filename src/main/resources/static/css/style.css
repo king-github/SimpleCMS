@@ -1,10 +1,27 @@
 body {
     background-color: lightyellow;
-
+    margin: 0;
 }
 
 ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
+}
+
+
+
+header {
+    background-color: gray;
+    padding: 1em;
+}
+
+nav a {
+    padding: 1em;
+    color: lightyellow;
+}
+
+footer {
+    background-color: gray;
+    padding: 1em;
 }

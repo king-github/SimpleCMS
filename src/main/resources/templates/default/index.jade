@@ -1,0 +1,11 @@
+extends ./main-layout
+
+block date
+  p Current time: #{date}
+
+block content
+  ul
+      for item in items
+        li #{item}
+      else
+        li No items

@@ -17,10 +17,11 @@ public class AppController {
 
         model.addAttribute(new Date());
         model.addAttribute("items", items);
+        model.addAttribute("title", "Home Page");
 
         System.out.println("Date: "+ new Date());
 
-        return "index";
+        return "default/index";
     }
 
 }
