@@ -5,12 +5,18 @@ html
     link(rel="Stylesheet" type="text/css" href="/public/css/style.css")
   body
 
-  include ./includes/header
+    include ./includes/header
+    include ./includes/navbar
 
+    block date
 
-  block date
+    section.sidebar.clearfix
+      block sidebarLeft
 
-  block content
+    section#content.clearfix
+      block content
 
+    section.sidebar.clearfix
+      block sidebarRight
 
-include ./includes/footer
+    include ./includes/footer

@@ -1,3 +1,7 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 body {
     background-color: lightyellow;
     margin: 0;
@@ -9,19 +13,68 @@ ul {
     padding: 0;
 }
 
-
-
 header {
     background-color: gray;
     padding: 1em;
 }
 
+header a {
+    text-decoration: none;
+}
+
 nav a {
     padding: 1em;
     color: lightyellow;
+    display: block;
+    float: left;
+}
+
+nav {
+    background-color: SlateGray;
+    clear: both;
+    display: block;
+    width: 100%;
 }
 
 footer {
     background-color: gray;
     padding: 1em;
+    clear: both;
+}
+
+#content {
+    width: 50%;
+    margin: 1% 0;
+    padding: 1em;
+    float: left;
+    background-color: LemonChiffon;
+}
+
+.sidebar {
+    width: 23%;
+    margin: 1%;
+    padding: 1em;
+    background-color: Khaki;
+    float: left;
+}
+
+
+.clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+.more {
+    text-transform: uppercase;
+    float: right;
+}
+
+.more::after {
+   content: " \00BB";
+}
+
+
+.publicationTime {
+    float: right;
 }

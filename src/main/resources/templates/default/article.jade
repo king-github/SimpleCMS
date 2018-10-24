@@ -1,12 +1,12 @@
 extends ./main-layout
 
-mixin articleHead(article)
+mixin articleContent(article)
  section
   h1 #{article.title}
   span.author #{article.author}
   span.publicationTime #{article.date.format(dtFormatter)}
-  p #{article.lead}
-  a.more(href="/article/"+article.id) More
+  p #{article.content}
+  a.back(href="/") Back
 
 block sidebarLeft
   ul
@@ -23,8 +23,4 @@ block sidebarRight
         li No items
 
 block content
-  ul
-      for article in articles
-        +articleHead(article)
-      else
-        li No articles
+  +articleContent(article)
