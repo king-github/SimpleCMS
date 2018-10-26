@@ -1,0 +1,7 @@
+extends ./error-layout
+
+block content
+  h1 Ooops! Resource not found - error 404.
+  h3 Error: #{exception.getMessage()}
+  h3 From: #{url}
+  p Datetime: #{datetime}

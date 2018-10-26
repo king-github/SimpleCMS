@@ -32,7 +32,6 @@ public class Article {
     }
 
     public LocalDateTime getDate() {
-        System.out.println("DT: "+this.date);
         return date;
     }
 

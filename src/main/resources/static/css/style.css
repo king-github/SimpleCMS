@@ -58,6 +58,14 @@ footer {
     float: left;
 }
 
+#errorContent {
+    width: 50%;
+    margin: 1% 25%;
+    padding: 1em;
+    float: left;
+    background-color: red;
+    color: white;
+}
 
 .clearfix::after {
     content: "";

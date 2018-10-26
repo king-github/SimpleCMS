@@ -1,5 +1,6 @@
 package com.example.demo.services;
 
+import com.example.demo.error.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class ArticleServiceInMemory implements ArticleService {
         return articles.stream()
                        .filter(article -> article.getId() == id)
                        .findFirst()
-                       .orElseThrow(() -> new RuntimeException("Article not found"));
+                       .orElseThrow(() -> new NotFoundException("Article not found"));
 
     }
 
