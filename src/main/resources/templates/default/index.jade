@@ -9,6 +9,7 @@ mixin articleHead(article)
   a.more(href="/article/"+article.id) More
 
 block sidebarLeft
+  h2 SIDEBAR LEFT
   ul
       for item in items
         li #{item}
@@ -16,6 +17,7 @@ block sidebarLeft
         li No items
 
 block sidebarRight
+  h2 SIDEBAR RIGHT
   ul
       for item in items
         li #{item}

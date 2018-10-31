@@ -1,4 +1,7 @@
-nav.clearfix
-   - menuItems = ["First", "Second", "Third"]
-   for item in menuItems
-     a(href="#") #{item}
+
+.navSpacer
+   nav#navbar.showMenu
+     i#menuBtn.fas.fa-bars
+     - menuItems = ["First", "Second", "Third"]
+     for item in menuItems
+       a(href="#"+item) #{item}
