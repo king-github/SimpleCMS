@@ -1,12 +1,15 @@
-package com.example.demo.services;
+package com.example.demo.entity;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
-
+@Entity
 public class Article {
 
-    private static long nextId=1;
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private LocalDateTime date;
     private String title;
@@ -14,8 +17,17 @@ public class Article {
     private String content;
     private String author;
 
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE })
+    @JoinTable(name = "article_tag",
+               joinColumns = @JoinColumn(name = "article_id"),
+               inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private Set<Tag> tags = new HashSet<>();
+
+    public Article() {
+    }
+
     public Article(String title, String lead, String content, String author) {
-        this.id = nextId++;
         this.date = LocalDateTime.now();
         this.title = title;
         this.lead = lead;
@@ -69,5 +81,13 @@ public class Article {
 
     public void setAuthor(String author) {
         this.author = author;
+    }
+
+    public Set<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
     }
 }

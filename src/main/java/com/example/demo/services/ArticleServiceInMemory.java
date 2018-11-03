@@ -1,5 +1,7 @@
 package com.example.demo.services;
 
+import com.example.demo.entity.Article;
+import com.example.demo.entity.ArticleService;
 import com.example.demo.error.NotFoundException;
 import org.springframework.stereotype.Service;
 
