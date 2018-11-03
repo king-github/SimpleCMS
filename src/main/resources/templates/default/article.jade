@@ -2,8 +2,11 @@ extends ./main-layout
 
 mixin articleContent(article)
  section
+  .tags
+     for tag in article.tags
+       span #{tag.name}
   h1 #{article.title}
-  span.author #{article.author}
+  span.author #{article.author.firstname + ' ' + article.author.lastname }
   span.publicationTime #{article.date.format(dtFormatter)}
   p #{article.content}
   a.back(href="/") Back

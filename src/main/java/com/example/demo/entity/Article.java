@@ -15,7 +15,9 @@ public class Article {
     private String title;
     private String lead;
     private String content;
-    private String author;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Author author;
 
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE })
@@ -27,7 +29,7 @@ public class Article {
     public Article() {
     }
 
-    public Article(String title, String lead, String content, String author) {
+    public Article(String title, String lead, String content, Author author) {
         this.date = LocalDateTime.now();
         this.title = title;
         this.lead = lead;
@@ -75,11 +77,11 @@ public class Article {
         this.content = content;
     }
 
-    public String getAuthor() {
+    public Author getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(Author author) {
         this.author = author;
     }
 

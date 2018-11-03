@@ -146,6 +146,14 @@ footer {
     float: right;
 }
 
+.tags span {
+    background-color: #fdf8d2;
+    padding: 0 1em;
+    margin-right: 1em;
+    border-radius: 0.5em;
+}
+
+
 .sidebar1, .sidebar2 {
     width: 100%;
     order: 2;
@@ -227,6 +235,16 @@ footer h1 {
     font-weight: 700;
     font-size: 2em;
     padding: 0.5em;
+}
+
+.clearfix:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.articleHead {
+  padding-bottom: 1em;
 }
 
 

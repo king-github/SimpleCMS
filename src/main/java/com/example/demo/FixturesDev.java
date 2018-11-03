@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.example.demo.entity.Author;
 import com.example.demo.entity.Tag;
 import com.example.demo.repository.ArticleRepository;
 import com.example.demo.repository.TagRepository;
@@ -19,7 +20,7 @@ import java.util.stream.Stream;
 @Component
 public class FixturesDev {
 
-    private final int NUM_OF_ARTICLES = 10;
+    private final int NUM_OF_ARTICLES = 20;
 
     @Autowired
     private ArticleRepository articleRepository;
@@ -37,12 +38,16 @@ public class FixturesDev {
         Stream.of("movies", "books", "music", "people")
               .forEach(s -> tagRepository.save(new Tag(s)));
 
+        Author[] authors = { new Author("Jony", "Pewnon"), new Author("Andy", "Brandy"), new Author("Phil", "Bill"),
+                             new Author("Abdul", "Gewnon"), new Author("Andrew", "Fandy"), new Author("Elisa", "Bill"),
+                             new Author("Sam", "Dewnon"), new Author("Jude", "Crandy"), new Author("Mike", "Bill")};
+
         for (int i=1; i< NUM_OF_ARTICLES; i++) {
 
             Article article = new Article("Article title nr: " + i,
                                           "Lorem ipsum czxczx... " + i,
                                           "Content Lorem ipsuma dsnfsd fsdn fdf",
-                                          "M. W." + i);
+                                          authors[random.nextInt(authors.length)]);
 
             List<Tag> tags = tagRepository.findAll();
 
