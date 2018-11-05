@@ -146,11 +146,12 @@ footer {
     float: right;
 }
 
-.tags span {
+.tags a {
     background-color: #fdf8d2;
     padding: 0 1em;
     margin-right: 1em;
     border-radius: 0.5em;
+    text-decoration: none;
 }
 
 

@@ -35,7 +35,7 @@ public class FixturesDev {
 
         Random random = new Random();
 
-        Stream.of("movies", "books", "music", "people")
+        Stream.of("movies", "books", "music", "people", "java8")
               .forEach(s -> tagRepository.save(new Tag(s)));
 
         Author[] authors = { new Author("Jony", "Pewnon"), new Author("Andy", "Brandy"), new Author("Phil", "Bill"),

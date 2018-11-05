@@ -24,6 +24,17 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    public List<Article> findArticleByAuthor(Long id) {
+        return articleRepository.findArticleByAuthorId(id);
+    }
+
+    @Override
+    public List<Article> findArticleByTag(Long id) {
+        return articleRepository.findArticleByTagId(id);
+    }
+
+
+    @Override
     public void addArticle(Article article) {
         articleRepository.save(article);
     }

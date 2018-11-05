@@ -4,9 +4,9 @@ mixin articleHead(article)
  section.articleHead.clearfix
   .tags
     for tag in article.tags
-      span #{tag.name}
+      a(href="/tag/"+tag.id) #{tag.name}
   h1 #{article.title}
-  span.author #{article.author.firstname + ' ' + article.author.lastname }
+  a.author(href="/author/"+article.author.id) #{article.author.firstname + ' ' + article.author.lastname }
   span.publicationTime #{article.date.format(dtFormatter)}
   p #{article.lead}
   a.more(href="/article/"+article.id) More
