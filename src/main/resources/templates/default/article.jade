@@ -1,29 +1,14 @@
 extends ./main-layout
 
-mixin articleContent(article)
- section
-  .tags
-     for tag in article.tags
-       span #{tag.name}
-  h1 #{article.title}
-  span.author #{article.author.firstname + ' ' + article.author.lastname }
-  span.publicationTime #{article.date.format(dtFormatter)}
-  p #{article.content}
-  a.back(href="/") Back
+include ./includes/mixins-main
 
 block sidebarLeft
-  ul
-      for item in items
-        li #{item}
-      else
-        li No items
+  h2 Left sidebar
+  +tagsBox(tags)
 
 block sidebarRight
-  ul
-      for item in items
-        li #{item}
-      else
-        li No items
+  h2 Right sidebar
+  +authorsBox(authors)
 
 block content
   +articleContent(article)

@@ -1,28 +1,23 @@
-package com.example.demo.entity;
+package com.example.demo.dto;
 
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+public class AuthorWithQuantityDto {
 
-@Entity
-public class Author {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     private String firstname;
+
     private String lastname;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "author")
-    private List<Article> articles = new ArrayList<>();
+    private Long quantity;
 
-
-    public Author() {
+    public AuthorWithQuantityDto() {
     }
 
-    public Author(String firstname, String lastname) {
+    public AuthorWithQuantityDto(Long id, String firstname, String lastname, Long quantity) {
+        this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
+        this.quantity = quantity;
     }
 
     public Long getId() {
@@ -47,5 +42,13 @@ public class Author {
 
     public void setLastname(String lastname) {
         this.lastname = lastname;
+    }
+
+    public Long getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Long quantity) {
+        this.quantity = quantity;
     }
 }

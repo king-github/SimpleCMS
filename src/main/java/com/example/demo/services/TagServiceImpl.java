@@ -1,6 +1,6 @@
 package com.example.demo.services;
 
-import com.example.demo.entity.Article;
+import com.example.demo.dto.TagWithQuantityDto;
 import com.example.demo.entity.Tag;
 import com.example.demo.error.NotFoundException;
 import com.example.demo.repository.TagRepository;
@@ -21,6 +21,12 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    public List<TagWithQuantityDto> getAllTagsWithQuantity() {
+        return tagRepository.countArticlesGroupedByTagName();
+    }
+
+
+    @Override
     public Tag findTagById(Long id) {
         return tagRepository.findById(id).orElseThrow(() -> new NotFoundException("Tag no exist"));
     }
@@ -31,7 +37,8 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public void addTag(Article article) {
-
+    public void addTag(Tag tag) {
+        tagRepository.save(tag);
     }
+
 }

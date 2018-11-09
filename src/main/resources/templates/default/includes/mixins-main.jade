@@ -1,0 +1,40 @@
+mixin articleHead(article)
+ section.articleHead.clearfix
+  .tags
+    for tag in article.tags
+      a(href="/tag/"+tag.id) #{tag.name}
+  h1 #{article.title}
+  a.author(href="/author/"+article.author.id) #{article.author.firstname + ' ' + article.author.lastname }
+  span.publicationTime #{article.date.format(dtFormatter)}
+  p #{article.lead}
+  a.more(href="/article/"+article.id) More
+
+mixin articleContent(article)
+ section
+  .tags
+     for tag in article.tags
+       span #{tag.name}
+  h1 #{article.title}
+  span.author #{article.author.firstname + ' ' + article.author.lastname }
+  span.publicationTime #{article.date.format(dtFormatter)}
+  p #{article.content}
+  a.back(href="/") Back
+
+mixin tagsBox(tags)
+  h3 Tags:
+  ul.tags
+      for tag in tags
+        li
+          a(href="/tag/"+tag.id) #{tag.name +' '}
+            span #{tag.quantity}
+      else
+        li No tags
+
+mixin authorsBox(authors)
+  h3 Authors:
+  ul.authors
+      for author in authors
+        li
+          a.author(href="/author/"+author.id) #{author.firstname + ' ' + author.lastname + ' ' + author.quantity}
+      else
+        li No authors

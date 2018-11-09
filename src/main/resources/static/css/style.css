@@ -16,6 +16,7 @@ ul {
     padding: 0;
 }
 
+
 header {
     padding: 1em;
     background: midnightblue url('images/text-bcg2.png') repeat 0 0;;
@@ -154,14 +155,28 @@ footer {
     text-decoration: none;
 }
 
+.authors a {
+    text-decoration: none;
+}
+
+.authors a:hover {
+    text-decoration: underline;
+}
+
 
 .sidebar1, .sidebar2 {
     width: 100%;
     order: 2;
     padding: 1em;
     background-color: ivory;
+    font-family: 'Kanit', serif;
+    font-weight: 400;
 }
 
+.sidebar1 li, .sidebar2 li{
+    padding: 0.4em;
+
+}
 
 #errorContent {
     width: 100%;

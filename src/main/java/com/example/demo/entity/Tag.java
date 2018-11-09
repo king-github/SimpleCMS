@@ -1,9 +1,30 @@
 package com.example.demo.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.example.demo.dto.TagWithQuantityDto;
+
+import javax.persistence.*;
+
+
+@SqlResultSetMapping(
+        name="tagDtoMapping",
+        classes={
+            @ConstructorResult(
+                targetClass= TagWithQuantityDto.class,
+                columns={@ColumnResult(name="id", type = Long.class),
+                         @ColumnResult(name="name", type = String.class),
+                         @ColumnResult(name="quantity", type = Integer.class)
+                        }
+            )
+        }
+)
+
+@NamedNativeQuery(name="Tag.countArticlesGroupedByTagName",
+        query = "SELECT t.id, t.name, count(at.tag_id) as quantity " +
+                "FROM ARTICLE_TAG AS at " +
+                "LEFT JOIN TAG t ON t.ID = at.tag_id " +    // change to RIGHT JOIN to list all tags with quantity >= 0
+                "GROUP BY t.name " +
+                "ORDER BY quantity DESC",
+        resultSetMapping="tagDtoMapping")
 
 @Entity
 public class Tag {
@@ -36,4 +57,5 @@ public class Tag {
     public void setName(String name) {
         this.name = name;
     }
+
 }

@@ -3,6 +3,7 @@ package com.example.demo;
 import com.example.demo.entity.Author;
 import com.example.demo.entity.Tag;
 import com.example.demo.repository.ArticleRepository;
+import com.example.demo.repository.AuthorRepository;
 import com.example.demo.repository.TagRepository;
 import com.example.demo.entity.Article;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class FixturesDev {
 
     @Autowired
     private ArticleRepository articleRepository;
+
+    @Autowired
+    private AuthorRepository authorRepository;
 
     @Autowired
     private TagRepository tagRepository;
@@ -56,8 +60,11 @@ public class FixturesDev {
                                  .collect(Collectors.toSet()));
 
             articleRepository.save(article);
-
         }
 
+        authorRepository.save(new Author("John", "Nothing"));
+        authorRepository.save(new Author("Barry", "Lazy"));
+        tagRepository.save(new Tag("Empty"));
+        tagRepository.save(new Tag("Null"));
     }
 }
