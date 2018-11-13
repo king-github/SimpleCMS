@@ -1,13 +1,17 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.Article;
-import com.example.demo.entity.ArticleService;
+
 import com.example.demo.entity.Tag;
+import com.example.demo.services.ArticleService;
 import com.example.demo.services.AuthorService;
 import com.example.demo.services.TagService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,8 +34,12 @@ public class AppController {
     @Autowired
     private AuthorService authorService;
 
+    final static private int ARTICLES_PER_PAGE = 5;
+
     @GetMapping(value = "/")
-    public String home (Model model){
+    public String home (Model model,
+                        @PageableDefault(page = 0, size = ARTICLES_PER_PAGE) Pageable pageable
+                        ){
 
 
         logger.info("Home page");
@@ -40,7 +48,7 @@ public class AppController {
 
         model.addAttribute("items", items);
         addDefaultAttributeToModel(model);
-        model.addAttribute("articles", articleService.getAllArticles());
+        model.addAttribute("articles", articleService.getAllArticles( pageable ));
         model.addAttribute("title", "Home Page");
 
         return "default/index";
@@ -60,7 +68,10 @@ public class AppController {
     }
 
     @GetMapping(value = "/author/{id}")
-    public String showArticleByAuthor (@PathVariable Long id, Model model){
+    public String showArticleByAuthor (@PathVariable Long id,
+                                       Model model,
+                                       @PageableDefault(page = 0, size = ARTICLES_PER_PAGE) Pageable pageable
+                                       ){
 
         logger.info("Home page");
 
@@ -68,14 +79,16 @@ public class AppController {
 
         model.addAttribute("items", items);
         addDefaultAttributeToModel(model);
-        model.addAttribute("articles", articleService.findArticleByAuthor(id));
+        model.addAttribute("articles", articleService.findArticleByAuthor(id, pageable ));
         model.addAttribute("title", "Home Page");
 
         return "default/index";
     }
 
     @GetMapping(value = "/tag/{id:\\d+}")
-    public String showArticleByTagId (@PathVariable Long id, Model model){
+    public String showArticleByTagId (@PathVariable Long id, Model model,
+                                      @PageableDefault(page = 0, size = ARTICLES_PER_PAGE) Pageable pageable
+                                      ){
 
         logger.info("Tag Page - id: "+id);
 
@@ -85,14 +98,17 @@ public class AppController {
 
         model.addAttribute("items", items);
         addDefaultAttributeToModel(model);
-        model.addAttribute("articles", articleService.findArticleByTag(tag.getId()));
+        model.addAttribute("articles", articleService.findArticleByTag(tag.getId(), pageable ));
         model.addAttribute("title", "Tag: "+tag.getName());
 
         return "default/index";
     }
 
     @GetMapping(value = "/tag/{name:[A-Za-z]\\w+}")
-    public String showArticleByTagName (@PathVariable String name, Model model){
+    public String showArticleByTagName (@PathVariable String name,
+                                        Model model,
+                                        @PageableDefault(page = 0, size = ARTICLES_PER_PAGE) Pageable pageable
+                                       ){
 
         logger.info("Tag Page - name: "+name);
 
@@ -102,7 +118,7 @@ public class AppController {
 
         model.addAttribute("items", items);
         addDefaultAttributeToModel(model);
-        model.addAttribute("articles", articleService.findArticleByTag(tag.getId()));
+        model.addAttribute("articles", articleService.findArticleByTag(tag.getId(), pageable ));
         model.addAttribute("title", "Tag: "+tag.getName());
 
         return "default/index";
@@ -111,7 +127,7 @@ public class AppController {
     private void addDefaultAttributeToModel(Model model) {
         model.addAttribute("tags", tagService.getAllTagsWithQuantity());
         model.addAttribute("authors", authorService.getAllAuthorsWithQuantity());
-        model.addAttribute("dtFormatter", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        model.addAttribute("dtFormatter", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
 }

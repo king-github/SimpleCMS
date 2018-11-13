@@ -2,6 +2,7 @@ extends ./main-layout
 
 include ./includes/mixins-main
 
+
 block sidebarLeft
   h2 Left sidebar
   +tagsBox(tags)
@@ -16,3 +17,14 @@ block content
         +articleHead(article)
       else
         li No articles
+
+  .pager
+    span #{articles.number} / #{articles.totalPages} pages,
+    span size: #{articles['size'] +'.. '}
+    span total elements: #{articles.totalElements}
+
+  .pager
+    +pagerBox(articles)
+
+  .pager
+    +pageSizeBox(articles, ' articles per page')

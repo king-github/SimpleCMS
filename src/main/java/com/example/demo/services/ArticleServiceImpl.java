@@ -1,14 +1,15 @@
 package com.example.demo.services;
 
 import com.example.demo.entity.Article;
-import com.example.demo.entity.ArticleService;
+
 import com.example.demo.error.NotFoundException;
 import com.example.demo.repository.ArticleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Primary
 @Service
@@ -18,19 +19,19 @@ public class ArticleServiceImpl implements ArticleService {
     private ArticleRepository articleRepository;
 
     @Override
-    public List<Article> getAllArticles() {
+    public Page<Article> getAllArticles(Pageable pageable) {
 
-        return articleRepository.findAll();
+        return articleRepository.findAll( pageable );
     }
 
     @Override
-    public List<Article> findArticleByAuthor(Long id) {
-        return articleRepository.findArticleByAuthorId(id);
+    public Page<Article> findArticleByAuthor(Long id, Pageable pageable) {
+        return articleRepository.findArticleByAuthorId(id, pageable );
     }
 
     @Override
-    public List<Article> findArticleByTag(Long id) {
-        return articleRepository.findArticleByTagId(id);
+    public Page<Article> findArticleByTag(Long id, Pageable pageable) {
+        return articleRepository.findArticleByTagId(id, pageable);
     }
 
 

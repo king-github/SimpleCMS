@@ -1,13 +1,15 @@
-package com.example.demo.entity;
+package com.example.demo.services;
 
-import java.util.List;
+import com.example.demo.entity.Article;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface ArticleService {
-    List<Article> getAllArticles();
+    Page<Article> getAllArticles(Pageable pageable);
 
-    List<Article> findArticleByAuthor(Long id);
+    Page<Article> findArticleByAuthor(Long id, Pageable pageable);
 
-    List<Article> findArticleByTag(Long id);
+    Page<Article> findArticleByTag(Long id, Pageable pageable);
 
     void addArticle(Article article);
 

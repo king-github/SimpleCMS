@@ -10,12 +10,24 @@ body {
     flex-direction: column;
 }
 
+a {
+    color: 	#663399;
+    color: 	midnightblue;
+}
+
+ a:visited, a:hover {
+    color: inherited;
+ }
+
 ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
 }
 
+h1, h2, h3, h4, h5, h6 {
+    font-weight: normal;
+}
 
 header {
     padding: 1em;
@@ -37,6 +49,7 @@ header h1 {
     font-weight: 700;
     font-size: 4em;
     margin: 0;
+    color: antiquewhite;
 }
 
 .sticky {
@@ -52,6 +65,7 @@ nav {
     display: flex;
     flex-direction: row;
     position: absolute;
+    z-index: 2;
     right: 0;
 }
 
@@ -147,10 +161,15 @@ footer {
     float: right;
 }
 
+div.tags {
+    display: flex;
+    flex-wrap: wrap;
+}
+
 .tags a {
     background-color: #fdf8d2;
     padding: 0 1em;
-    margin-right: 1em;
+    margin: 0.1em;
     border-radius: 0.5em;
     text-decoration: none;
 }
@@ -261,6 +280,51 @@ footer h1 {
 
 .articleHead {
   padding-bottom: 1em;
+}
+
+.pager {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.pager span, .pager a {
+  text-decoration: none;
+  padding: 0.2em;
+  margin: 0.2em;
+  min-width: 3em;
+  text-align: center;
+  border-radius: 0.5em;
+  background-color: #e0e0e0;
+  border: solid 1px lightblue;
+  transition: all .3s
+}
+
+.pager span {
+  background-color: antiquewhite;
+  border: solid 1px lightblue;
+}
+
+.pager a:hover {
+  background-color: midnightblue;
+  color: antiquewhite;
+}
+
+.dropdown-content a, .dropdown-content span {
+    display: block;
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown-content {
+    position: absolute;
+    display: none;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
 }
 
 
