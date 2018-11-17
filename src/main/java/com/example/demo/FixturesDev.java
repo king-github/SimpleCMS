@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 
 import javax.transaction.Transactional;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -53,6 +54,7 @@ public class FixturesDev {
                                           "Content Lorem ipsuma dsnfsd fsdn fdf",
                                           authors[random.nextInt(authors.length)]);
 
+            article.setDate(ZonedDateTime.now().toLocalDateTime().minusMinutes(random.nextInt(60*24*365)));
             List<Tag> tags = tagRepository.findAll();
 
             article.setTags( tags.stream()

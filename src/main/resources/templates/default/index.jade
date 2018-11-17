@@ -3,15 +3,9 @@ extends ./main-layout
 include ./includes/mixins-main
 
 
-block sidebarLeft
-  h2 Left sidebar
-  +tagsBox(tags)
-
-block sidebarRight
-  h2 Right sidebar
-  +authorsBox(authors)
-
 block content
+  - var params = '?'+pagerParamsHelper.getSizeAndSortParamsString(articles.getPageable())
+
   ul
       for article in articles
         +articleHead(article)
@@ -19,12 +13,22 @@ block content
         li No articles
 
   .pager
-    span #{articles.number} / #{articles.totalPages} pages,
-    span size: #{articles['size'] +'.. '}
-    span total elements: #{articles.totalElements}
+    span page: #{articles.number +1} / #{articles.totalPages}
+    span articles per page: #{articles['size'] +' '}
+    span total articles: #{articles.totalElements}
 
   .pager
     +pagerBox(articles)
 
   .pager
     +pageSizeBox(articles, ' articles per page')
+
+    +sortBox(articles)
+
+block sidebarLeft
+  h2 Left sidebar
+  +tagsBox(tags)
+
+block sidebarRight
+  h2 Right sidebar
+  +authorsBox(authors)

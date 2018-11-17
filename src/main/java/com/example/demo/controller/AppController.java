@@ -3,14 +3,17 @@ package com.example.demo.controller;
 import com.example.demo.entity.Article;
 
 import com.example.demo.entity.Tag;
+import com.example.demo.helper.PagerParamsHelper;
+import com.example.demo.helper.SortModeHelper;
 import com.example.demo.services.ArticleService;
 import com.example.demo.services.AuthorService;
 import com.example.demo.services.TagService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
+
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +27,7 @@ import java.time.format.DateTimeFormatter;
 public class AppController {
 
     private static final Logger logger = LoggerFactory.getLogger(AppController.class);
+    private static final int ARTICLES_PER_PAGE = 5;
 
     @Autowired
     private ArticleService articleService;
@@ -34,11 +38,15 @@ public class AppController {
     @Autowired
     private AuthorService authorService;
 
-    final static private int ARTICLES_PER_PAGE = 5;
+    @Autowired
+    private PagerParamsHelper pagerParamsHelper;
+
+    @Autowired
+    private SortModeHelper sortModeHelper;
 
     @GetMapping(value = "/")
     public String home (Model model,
-                        @PageableDefault(page = 0, size = ARTICLES_PER_PAGE) Pageable pageable
+                        @PageableDefault(size = ARTICLES_PER_PAGE) Pageable pageable
                         ){
 
 
@@ -70,7 +78,7 @@ public class AppController {
     @GetMapping(value = "/author/{id}")
     public String showArticleByAuthor (@PathVariable Long id,
                                        Model model,
-                                       @PageableDefault(page = 0, size = ARTICLES_PER_PAGE) Pageable pageable
+                                       @PageableDefault(size = ARTICLES_PER_PAGE) Pageable pageable
                                        ){
 
         logger.info("Home page");
@@ -87,7 +95,7 @@ public class AppController {
 
     @GetMapping(value = "/tag/{id:\\d+}")
     public String showArticleByTagId (@PathVariable Long id, Model model,
-                                      @PageableDefault(page = 0, size = ARTICLES_PER_PAGE) Pageable pageable
+                                      @PageableDefault(size = ARTICLES_PER_PAGE) Pageable pageable
                                       ){
 
         logger.info("Tag Page - id: "+id);
@@ -107,7 +115,7 @@ public class AppController {
     @GetMapping(value = "/tag/{name:[A-Za-z]\\w+}")
     public String showArticleByTagName (@PathVariable String name,
                                         Model model,
-                                        @PageableDefault(page = 0, size = ARTICLES_PER_PAGE) Pageable pageable
+                                        @PageableDefault(size = ARTICLES_PER_PAGE) Pageable pageable
                                        ){
 
         logger.info("Tag Page - name: "+name);
@@ -128,6 +136,8 @@ public class AppController {
         model.addAttribute("tags", tagService.getAllTagsWithQuantity());
         model.addAttribute("authors", authorService.getAllAuthorsWithQuantity());
         model.addAttribute("dtFormatter", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        model.addAttribute("pagerParamsHelper", pagerParamsHelper);
+        model.addAttribute("sortModeHelper", sortModeHelper);
     }
 
 }

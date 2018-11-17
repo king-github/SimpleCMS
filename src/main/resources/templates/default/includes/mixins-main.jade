@@ -1,10 +1,11 @@
+
 mixin articleHead(article)
  section.articleHead.clearfix
   .tags
     for tag in article.tags
       a(href="/tag/"+tag.id) #{tag.name}
   h1 #{article.title}
-  a.author(href="/author/"+article.author.id) #{article.author.firstname + ' ' + article.author.lastname }
+  a.author(href="/author/"+article.author.id +params) #{article.author.firstname + ' ' + article.author.lastname }
   span.publicationTime #{article.date.format(dtFormatter)}
   p #{article.lead}
   a.more(href="/article/"+article.id) More
@@ -21,57 +22,76 @@ mixin articleContent(article)
   a.back(href="/") Back
 
 mixin tagsBox(tags)
+
   h3 Tags:
   ul.tags
       for tag in tags
         li
-          a(href="/tag/"+tag.id) #{tag.name +' '}
+          a(href="/tag/"+tag.id +params) #{tag.name +' '}
             span #{tag.quantity}
       else
         li No tags
 
 mixin authorsBox(authors)
+
   h3 Authors:
   ul.authors
       for author in authors
         li
-          a.author(href="/author/"+author.id) #{author.firstname + ' ' + author.lastname + ' ' + author.quantity}
+          a.author(href='/author/'+author.id +params) #{author.firstname +' ' +author.lastname +' ' +author.quantity}
       else
         li No authors
 
 
 mixin pagerBox(pageable)
+
+    - var sizeParams = pagerParamsHelper.getSizeAndSortParamsString(articles.getPageable())
+
     if (!pageable.isFirst())
-      a(href="?page=0" +'&size=' +pageable['size'])  first
+      a(href="?page=0" + sizeParams) &laquo;
     else
-      span first
+      span &laquo;
 
     if (pageable.hasPrevious())
-      a(href="?page="+(pageable.number-1) +'&size=' +pageable['size'])  prev
+      a(href='?page='+(pageable.number-1) + sizeParams) &lsaquo;
     else
-      span prev
+      span &lsaquo;
 
     - var p=0
     while p < pageable.totalPages
       if (p==pageable.number)
         span= p+1
       else
-        a(href="?page="+(p) +'&size=' +pageable['size'])= p+1
+        a(href="?page="+(p) +sizeParams)= p+1
       - p++
 
     if (pageable.hasNext())
-      a(href="?page="+(pageable.number+1) +'&size=' +pageable['size'])  next
+      a(href="?page="+(pageable.number+1) +sizeParams) &rsaquo;
     else
-      span next
+      span &rsaquo;
 
     if (!pageable.isLast())
-      a(href="?page="+(pageable.totalPages-1) +'&size=' +pageable['size'])  last
+      a(href="?page="+(pageable.totalPages-1) +sizeParams) &raquo;
     else
-      span last
+      span &raquo;
 
 mixin pageSizeBox(pageable, itemsPerPageText)
+
+  - var params = pagerParamsHelper.getSortParamsString(pageable.getPageable())
+
   span.dropdown #{pageable['size'] + itemsPerPageText}
      span.dropdown-content
        each pageSize in [5, 10, 15, 20, 50]
          if (pageSize != pageable['size'])
-            a(href="?page=0&size="+pageSize)= pageSize + itemsPerPageText
+            a(href="?page=0&size=" +pageSize +params)= pageSize + itemsPerPageText
+
+mixin sortBox(pageable)
+
+  - var params = pagerParamsHelper.getSortParamsString(pageable.getPageable())
+
+  span.dropdown= 'sort ' + sortModeHelper.findModeByParamString(params).name
+     span.dropdown-content
+       each orderMode in sortModeHelper.getAllModes()
+         a(href="?page="+ pageable.number +"&size="+pageable['size'] +orderMode.paramString)= orderMode.name
+
+

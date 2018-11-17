@@ -208,9 +208,15 @@ div.tags {
 }
 
 .more, .back {
+    padding: 0 1em;
+    color: blanchedalmond;
+    background-color: midnightblue;
+    border-radius: 1em;
     text-transform: uppercase;
     text-decoration: none;
     float: right;
+    font-family: 'Cinzel', serif;
+    font-weight: 400;
 }
 
 .back {
@@ -320,7 +326,10 @@ footer h1 {
 
 .dropdown-content {
     position: absolute;
+    right: 0;
     display: none;
+    z-index: 2;
+    width: max-content;
 }
 
 .dropdown:hover .dropdown-content {
