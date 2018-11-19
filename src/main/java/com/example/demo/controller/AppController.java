@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.entity.Article;
 
 import com.example.demo.entity.Tag;
+import com.example.demo.helper.PageSizeHelper;
 import com.example.demo.helper.PagerParamsHelper;
 import com.example.demo.helper.SortModeHelper;
 import com.example.demo.services.ArticleService;
@@ -43,6 +44,9 @@ public class AppController {
 
     @Autowired
     private SortModeHelper sortModeHelper;
+
+    @Autowired
+    private PageSizeHelper pageSizeHelper;
 
     @GetMapping(value = "/")
     public String home (Model model,
@@ -119,6 +123,7 @@ public class AppController {
         model.addAttribute("dtFormatter", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         model.addAttribute("pagerParamsHelper", pagerParamsHelper);
         model.addAttribute("sortModeHelper", sortModeHelper);
+        model.addAttribute("pageSizeHelper", pageSizeHelper);
     }
 
 }

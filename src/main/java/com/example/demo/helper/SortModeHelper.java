@@ -18,8 +18,8 @@ public class SortModeHelper {
 //        a(href="?page="+ pageable.number +"&size="+pageable['size'] + "&sort=date,desc") by date - descending
 
         NONE("none", ""),
-        DATE("by date ascending", "&sort=date,ASC"),
-        DATE_DESC("by date descending", "&sort=date,DESC"),
+        DATE("by date - ascending", "&sort=date,ASC"),
+        DATE_DESC("by date -descending", "&sort=date,DESC"),
         AUTHOR("by author - ascending", "&sort=author.lastname,ASC&sort=author.firstname,ASC"),
         AUTHOR_DESC("by author - descending", "&sort=author.lastname,DESC&sort=author.firstname,DESC"),
         TITLE("by title - ascending", "&sort=title,ASC"),

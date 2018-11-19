@@ -81,17 +81,22 @@ mixin pageSizeBox(pageable, itemsPerPageText)
 
   span.dropdown #{pageable['size'] + itemsPerPageText}
      span.dropdown-content
-       each pageSize in [5, 10, 15, 20, 50]
+       each pageSize in pageSizeHelper.getPageSizeList();
          if (pageSize != pageable['size'])
             a(href="?page=0&size=" +pageSize +params)= pageSize + itemsPerPageText
+         else
+           span= pageSize + itemsPerPageText
 
 mixin sortBox(pageable)
 
   - var params = pagerParamsHelper.getSortParamsString(pageable.getPageable())
+  - var sortName = sortModeHelper.findModeByParamString(params).name
 
-  span.dropdown= 'sort ' + sortModeHelper.findModeByParamString(params).name
+  span.dropdown= 'sort ' + sortName
      span.dropdown-content
        each orderMode in sortModeHelper.getAllModes()
-         a(href="?page="+ pageable.number +"&size="+pageable['size'] +orderMode.paramString)= orderMode.name
-
+         if (sortName != orderMode.name)
+            a(href="?page="+ pageable.number +"&size="+pageable['size'] +orderMode.paramString)= orderMode.name
+         else
+            span= orderMode.name
 
