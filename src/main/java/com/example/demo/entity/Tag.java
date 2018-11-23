@@ -19,9 +19,11 @@ import javax.persistence.*;
 )
 
 @NamedNativeQuery(name="Tag.countArticlesGroupedByTagName",
-        query = "SELECT t.id, t.name, count(at.tag_id) as quantity " +
+        query = "SELECT t.id, t.name, COUNT(at.tag_id) as quantity " +
                 "FROM ARTICLE_TAG AS at " +
-                "LEFT JOIN TAG t ON t.ID = at.tag_id " +    // change to RIGHT JOIN to list all tags with quantity >= 0
+                "LEFT JOIN TAG t ON t.ID = at.tag_id " +
+                "LEFT JOIN ARTICLE a ON a.ID = at.article_id " +
+                "WHERE a.published = TRUE " +
                 "GROUP BY t.name " +
                 "ORDER BY quantity DESC",
         resultSetMapping="tagDtoMapping")

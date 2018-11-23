@@ -20,7 +20,6 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public Page<Article> getAllArticles(Pageable pageable) {
-
         return articleRepository.findAll( pageable );
     }
 
@@ -30,8 +29,18 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public Page<Article> findArticleByTag(Long id, Pageable pageable) {
-        return articleRepository.findArticleByTagId(id, pageable);
+    public Page<Article> getAllPublishedArticles(Pageable pageable) {
+        return articleRepository.findArticleByPublishedTrue(pageable);
+    }
+
+    @Override
+    public Page<Article> findPublishedArticleByAuthor(Long id, Pageable pageable) {
+        return articleRepository.findArticleByAuthorIdAndPublishedTrue(id, pageable );
+    }
+
+    @Override
+    public Page<Article> findPublishedArticleByTag(Long id, Pageable pageable) {
+        return articleRepository.findArticleByTagIdAndPublished(id, pageable);
     }
 
 

@@ -6,7 +6,7 @@ mixin articleHead(article)
       a(href="/tag/"+tag.id) #{tag.name}
   h1 #{article.title}
   a.author(href="/author/"+article.author.id +params) #{article.author.firstname + ' ' + article.author.lastname }
-  span.publicationTime #{article.date.format(dtFormatter)}
+  span.publicationTime #{article.publicationDate.format(dtFormatter)}
   p #{article.lead}
   a.more(href="/article/"+article.id) More
 
@@ -17,7 +17,7 @@ mixin articleContent(article)
        span #{tag.name}
   h1 #{article.title}
   span.author #{article.author.firstname + ' ' + article.author.lastname }
-  span.publicationTime #{article.date.format(dtFormatter)}
+  span.publicationTime #{article.publicationDate.format(dtFormatter)}
   p #{article.content}
   a.back(href="/") Back
 

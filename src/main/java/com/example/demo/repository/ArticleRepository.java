@@ -13,8 +13,12 @@ import org.springframework.stereotype.Repository;
 public interface ArticleRepository extends JpaRepository<Article, Long> {
 
 
+    Page<Article> findArticleByPublishedTrue(Pageable pageable);
+
     Page<Article> findArticleByAuthorId(Long id, Pageable pageable);
 
-    @Query("select a from Article a join a.tags t where t.id = ?1")
-    Page<Article> findArticleByTagId(Long id, Pageable pageable);
+    Page<Article> findArticleByAuthorIdAndPublishedTrue(Long id, Pageable pageable);
+
+    @Query("select a from Article a join a.tags t where t.id = ?1 and a.published=TRUE")
+    Page<Article> findArticleByTagIdAndPublished(Long id, Pageable pageable);
 }

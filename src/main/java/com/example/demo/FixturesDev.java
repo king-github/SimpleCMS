@@ -54,7 +54,8 @@ public class FixturesDev {
                                           "Content Lorem ipsuma dsnfsd fsdn fdf",
                                           authors[random.nextInt(authors.length)]);
 
-            article.setDate(ZonedDateTime.now().toLocalDateTime().minusMinutes(random.nextInt(60*24*365)));
+            article.setPublished(true);
+            article.setPublicationDate(ZonedDateTime.now().toLocalDateTime().minusMinutes(random.nextInt(60*24*365)));
             List<Tag> tags = tagRepository.findAll();
 
             article.setTags( tags.stream()

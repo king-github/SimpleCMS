@@ -1,5 +1,8 @@
 package com.example.demo.entity;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -11,10 +14,12 @@ public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private LocalDateTime date;
+    private LocalDateTime publicationDate;
     private String title;
     private String lead;
     private String content;
+
+    private boolean published = false;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Author author;
@@ -27,11 +32,17 @@ public class Article {
     @OrderBy("name ASC")
     private Set<Tag> tags = new HashSet<>();
 
+    @CreationTimestamp
+    private LocalDateTime createDateTime;
+
+    @UpdateTimestamp
+    private LocalDateTime updateDateTime;
+
     public Article() {
     }
 
     public Article(String title, String lead, String content, Author author) {
-        this.date = LocalDateTime.now();
+        this.publicationDate = LocalDateTime.now();
         this.title = title;
         this.lead = lead;
         this.content = content;
@@ -46,12 +57,12 @@ public class Article {
         this.id = id;
     }
 
-    public LocalDateTime getDate() {
-        return date;
+    public LocalDateTime getPublicationDate() {
+        return publicationDate;
     }
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
+    public void setPublicationDate(LocalDateTime publicationDate) {
+        this.publicationDate = publicationDate;
     }
 
     public String getTitle() {
@@ -92,5 +103,29 @@ public class Article {
 
     public void setTags(Set<Tag> tags) {
         this.tags = tags;
+    }
+
+    public Boolean isPublicated() {
+        return published;
+    }
+
+    public void setPublished(Boolean published) {
+        this.published = published;
+    }
+
+    public LocalDateTime getCreateDateTime() {
+        return createDateTime;
+    }
+
+    public void setCreateDateTime(LocalDateTime createDateTime) {
+        this.createDateTime = createDateTime;
+    }
+
+    public LocalDateTime getUpdateDateTime() {
+        return updateDateTime;
+    }
+
+    public void setUpdateDateTime(LocalDateTime updateDateTime) {
+        this.updateDateTime = updateDateTime;
     }
 }

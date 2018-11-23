@@ -9,7 +9,11 @@ public interface ArticleService {
 
     Page<Article> findArticleByAuthor(Long id, Pageable pageable);
 
-    Page<Article> findArticleByTag(Long id, Pageable pageable);
+    Page<Article> getAllPublishedArticles(Pageable pageable);
+
+    Page<Article> findPublishedArticleByAuthor(Long id, Pageable pageable);
+
+    Page<Article> findPublishedArticleByTag(Long id, Pageable pageable);
 
     void addArticle(Article article);
 

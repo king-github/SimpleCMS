@@ -55,7 +55,7 @@ public class AppController {
 
         logger.info("Home page");
 
-        model.addAttribute("articles", articleService.getAllArticles( pageable ));
+        model.addAttribute("articles", articleService.getAllPublishedArticles( pageable ));
         model.addAttribute("title", "Home Page");
 
         return "default/index";
@@ -81,7 +81,7 @@ public class AppController {
 
         logger.info("Home page");
 
-        model.addAttribute("articles", articleService.findArticleByAuthor(id, pageable ));
+        model.addAttribute("articles", articleService.findPublishedArticleByAuthor(id, pageable ));
         model.addAttribute("title", "Home Page");
 
         return "default/index";
@@ -95,7 +95,7 @@ public class AppController {
         logger.info("Tag Page - id: "+id);
 
         Tag tag = tagService.findTagById(id);
-        model.addAttribute("articles", articleService.findArticleByTag(tag.getId(), pageable ));
+        model.addAttribute("articles", articleService.findPublishedArticleByTag(tag.getId(), pageable ));
         model.addAttribute("title", "Tag: "+tag.getName());
 
         return "default/index";
@@ -110,7 +110,7 @@ public class AppController {
         logger.info("Tag Page - name: "+name);
 
         Tag tag = tagService.findTagByName(name);
-        model.addAttribute("articles", articleService.findArticleByTag(tag.getId(), pageable ));
+        model.addAttribute("articles", articleService.findPublishedArticleByTag(tag.getId(), pageable ));
         model.addAttribute("title", "Tag: "+tag.getName());
 
         return "default/index";
