@@ -63,7 +63,7 @@ nav {
     background-color: midnightblue;
     width: fit-content;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     position: absolute;
     z-index: 2;
     right: 0;
@@ -172,6 +172,17 @@ div.tags {
     margin: 0.1em;
     border-radius: 0.5em;
     text-decoration: none;
+}
+
+.tags .section-article {
+    background-color: midnightblue;
+    color: #fdf8d2;
+    padding: 0 1em;
+    margin: 0.1em;
+    margin-right: auto;
+    border-radius: 0;
+    text-decoration: none;
+    order: -1;
 }
 
 .authors a {
@@ -370,7 +381,13 @@ footer h1 {
       width: 24%;
   }
 
+  nav {
+    flex-direction: row;
+  }
+
   nav.showMenu i#menuBtn {
       display: none;
   }
+
+
 }

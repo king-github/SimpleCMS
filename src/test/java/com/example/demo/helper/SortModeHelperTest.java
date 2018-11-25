@@ -1,9 +1,8 @@
 package com.example.demo.helper;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -15,18 +14,15 @@ public class SortModeHelperTest {
         SortModeHelper sortModeHelper = new SortModeHelper();
         SortModeHelper.OrderMode[] allModes = sortModeHelper.getAllModes();
 
-        SortModeHelper.OrderMode[] expected = { SortModeHelper.OrderMode.NONE,
-                                                SortModeHelper.OrderMode.DATE,
-                                                SortModeHelper.OrderMode.DATE_DESC };
-
-        assertEquals(allModes.length, 7);
+        assertEquals(allModes.length, 9);
     }
 
     @Test
     public void getName() {
-        // DATE("date ascending", "&sort=date,ASC")
+
         SortModeHelper sortModeHelper = new SortModeHelper();
-        assertEquals("by date ascending", SortModeHelper.OrderMode.DATE.getName());
+        assertThat(SortModeHelper.OrderMode.DATE.getName(), CoreMatchers.containsString("date"));
+        assertThat(SortModeHelper.OrderMode.DATE.getName(), CoreMatchers.containsString("ascending"));
 
     }
 
@@ -34,7 +30,7 @@ public class SortModeHelperTest {
     public void getParamString() {
         // DATE("date ascending", "&sort=date,ASC")
         SortModeHelper sortModeHelper = new SortModeHelper();
-        assertEquals("&sort=date,ASC", SortModeHelper.OrderMode.DATE.getParamString());
+        assertEquals("&sort=publicationDate,ASC", SortModeHelper.OrderMode.DATE.getParamString());
 
     }
 
@@ -42,7 +38,8 @@ public class SortModeHelperTest {
     public void findModeByParamString() {
         // DATE("date ascending", "&sort=date,ASC")
         SortModeHelper sortModeHelper = new SortModeHelper();
-        assertEquals(SortModeHelper.OrderMode.DATE, sortModeHelper.findModeByParamString("&sort=date,ASC"));
+        String paramString = SortModeHelper.OrderMode.DATE.getParamString();
+        assertEquals(SortModeHelper.OrderMode.DATE, sortModeHelper.findModeByParamString(paramString));
 
     }
 

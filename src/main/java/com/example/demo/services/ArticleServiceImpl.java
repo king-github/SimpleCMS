@@ -43,6 +43,11 @@ public class ArticleServiceImpl implements ArticleService {
         return articleRepository.findArticleByTagIdAndPublished(id, pageable);
     }
 
+    @Override
+    public Page<Article> findPublishedArticleBySection(Long id, Pageable pageable) {
+        return articleRepository.findArticleBySectionIdAndPublishedTrue(id, pageable);
+    }
+
 
     @Override
     public void addArticle(Article article) {

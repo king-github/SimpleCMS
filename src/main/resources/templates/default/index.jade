@@ -6,11 +6,10 @@ include ./includes/mixins-main
 block content
   - var params = '?'+pagerParamsHelper.getSizeAndSortParamsString(articles.getPageable())
 
-  ul
-      for article in articles
-        +articleHead(article)
-      else
-        li No articles
+  for article in articles
+    +articleHead(article)
+  else
+    span No articles
 
   .pager
     span page: #{articles.number +1} / #{articles.totalPages}

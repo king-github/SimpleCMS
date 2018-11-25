@@ -4,6 +4,7 @@ mixin articleHead(article)
   .tags
     for tag in article.tags
       a(href="/tag/"+tag.id) #{tag.name}
+    a(href="/section/"+article.section.id).section-article #{article.section.name}
   h1 #{article.title}
   a.author(href="/author/"+article.author.id +params) #{article.author.firstname + ' ' + article.author.lastname }
   span.publicationTime #{article.publicationDate.format(dtFormatter)}

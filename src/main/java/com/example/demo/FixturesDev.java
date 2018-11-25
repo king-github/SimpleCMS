@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import com.example.demo.entity.Author;
+import com.example.demo.entity.Section;
 import com.example.demo.entity.Tag;
 import com.example.demo.repository.ArticleRepository;
 import com.example.demo.repository.AuthorRepository;
@@ -43,9 +44,14 @@ public class FixturesDev {
         Stream.of("movies", "books", "music", "people", "java8")
               .forEach(s -> tagRepository.save(new Tag(s)));
 
+        Section[] sections = { new Section("Programing"), new Section("Games"), new Section("Lifestyle"),
+                               new Section("Travels"), new Section("Hardware") };
+
         Author[] authors = { new Author("Jony", "Pewnon"), new Author("Andy", "Brandy"), new Author("Phil", "Bill"),
                              new Author("Abdul", "Gewnon"), new Author("Andrew", "Fandy"), new Author("Elisa", "Bill"),
-                             new Author("Sam", "Dewnon"), new Author("Jude", "Crandy"), new Author("Mike", "Bill")};
+                             new Author("Sam", "Dewnon"), new Author("Jude", "Crandy"), new Author("Mike", "Bill"),
+                             new Author("Johnm", "Salami"), new Author("Agnes", "Fraindy"), new Author("Sylvana", "Upthon")
+                           };
 
         for (int i=1; i< NUM_OF_ARTICLES; i++) {
 
@@ -54,6 +60,7 @@ public class FixturesDev {
                                           "Content Lorem ipsuma dsnfsd fsdn fdf",
                                           authors[random.nextInt(authors.length)]);
 
+            article.setSection(sections[random.nextInt(sections.length)]);
             article.setPublished(true);
             article.setPublicationDate(ZonedDateTime.now().toLocalDateTime().minusMinutes(random.nextInt(60*24*365)));
             List<Tag> tags = tagRepository.findAll();

@@ -8,6 +8,7 @@ import com.example.demo.helper.PagerParamsHelper;
 import com.example.demo.helper.SortModeHelper;
 import com.example.demo.services.ArticleService;
 import com.example.demo.services.AuthorService;
+import com.example.demo.services.SectionService;
 import com.example.demo.services.TagService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +41,9 @@ public class AppController {
     private AuthorService authorService;
 
     @Autowired
+    private SectionService sectionService;
+
+    @Autowired
     private PagerParamsHelper pagerParamsHelper;
 
     @Autowired
@@ -47,6 +51,7 @@ public class AppController {
 
     @Autowired
     private PageSizeHelper pageSizeHelper;
+
 
     @GetMapping(value = "/")
     public String home (Model model,
@@ -87,6 +92,20 @@ public class AppController {
         return "default/index";
     }
 
+    @GetMapping(value = "/section/{id}")
+    public String showArticleBySection (@PathVariable Long id,
+                                        Model model,
+                                        @PageableDefault(size = ARTICLES_PER_PAGE) Pageable pageable
+    ){
+
+        logger.info("Get articles from section id = {}", id);
+
+        model.addAttribute("articles", articleService.findPublishedArticleBySection(id, pageable ));
+        model.addAttribute("title", "Home Page");
+
+        return "default/index";
+    }
+
     @GetMapping(value = "/tag/{id:\\d+}")
     public String showArticleByTagId (@PathVariable Long id, Model model,
                                       @PageableDefault(size = ARTICLES_PER_PAGE) Pageable pageable
@@ -120,6 +139,7 @@ public class AppController {
     private void addDefaultAttributeToModel(Model model) {
         model.addAttribute("tags", tagService.getAllTagsWithQuantity());
         model.addAttribute("authors", authorService.getAllAuthorsWithQuantity());
+        model.addAttribute("sections", sectionService.getAllSections());
         model.addAttribute("dtFormatter", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         model.addAttribute("pagerParamsHelper", pagerParamsHelper);
         model.addAttribute("sortModeHelper", sortModeHelper);

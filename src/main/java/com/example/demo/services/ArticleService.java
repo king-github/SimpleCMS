@@ -15,7 +15,11 @@ public interface ArticleService {
 
     Page<Article> findPublishedArticleByTag(Long id, Pageable pageable);
 
+    Page<Article> findPublishedArticleBySection(Long id, Pageable pageable);
+
     void addArticle(Article article);
 
     Article findArticle(Long id);
+
+
 }

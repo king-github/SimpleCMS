@@ -24,6 +24,8 @@ public class Article {
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Author author;
 
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Section section;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(name = "article_tag",
@@ -97,6 +99,14 @@ public class Article {
         this.author = author;
     }
 
+    public Section getSection() {
+        return section;
+    }
+
+    public void setSection(Section section) {
+        this.section = section;
+    }
+
     public Set<Tag> getTags() {
         return tags;
     }
@@ -105,11 +115,11 @@ public class Article {
         this.tags = tags;
     }
 
-    public Boolean isPublicated() {
+    public boolean isPublicated() {
         return published;
     }
 
-    public void setPublished(Boolean published) {
+    public void setPublished(boolean published) {
         this.published = published;
     }
 
