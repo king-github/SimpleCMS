@@ -13,8 +13,8 @@ import java.util.Date;
 @ControllerAdvice
 public class ExceptionHandlerController {
 
-    public static final String DEFAULT_ERROR_VIEW = "default/error";
-    public static final String NOT_FOUND_ERROR_VIEW = "default/error-404";
+    public static final String DEFAULT_ERROR_VIEW = "front/error";
+    public static final String NOT_FOUND_ERROR_VIEW = "front/error-404";
 
     @ExceptionHandler(value = {Exception.class, RuntimeException.class})
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)

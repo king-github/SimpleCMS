@@ -1,4 +1,4 @@
-package com.example.demo.controller;
+package com.example.demo.controller.front;
 
 import com.example.demo.entity.Article;
 
@@ -26,9 +26,9 @@ import java.time.format.DateTimeFormatter;
 
 
 @Controller
-public class AppController {
+public class ArticleController {
 
-    private static final Logger logger = LoggerFactory.getLogger(AppController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ArticleController.class);
     private static final int ARTICLES_PER_PAGE = 5;
 
     @Autowired
@@ -63,7 +63,7 @@ public class AppController {
         model.addAttribute("articles", articleService.getAllPublishedArticles( pageable ));
         model.addAttribute("title", "Home Page");
 
-        return "default/index";
+        return "front/index";
     }
 
     @GetMapping(value = "/article/{id}")
@@ -75,7 +75,7 @@ public class AppController {
         model.addAttribute("article", article);
         model.addAttribute("title", article.getTitle());
 
-        return "default/article";
+        return "front/article";
     }
 
     @GetMapping(value = "/author/{id}")
@@ -89,7 +89,7 @@ public class AppController {
         model.addAttribute("articles", articleService.findPublishedArticleByAuthor(id, pageable ));
         model.addAttribute("title", "Home Page");
 
-        return "default/index";
+        return "front/index";
     }
 
     @GetMapping(value = "/section/{id}")
@@ -103,7 +103,7 @@ public class AppController {
         model.addAttribute("articles", articleService.findPublishedArticleBySection(id, pageable ));
         model.addAttribute("title", "Home Page");
 
-        return "default/index";
+        return "front/index";
     }
 
     @GetMapping(value = "/tag/{id:\\d+}")
@@ -117,7 +117,7 @@ public class AppController {
         model.addAttribute("articles", articleService.findPublishedArticleByTag(tag.getId(), pageable ));
         model.addAttribute("title", "Tag: "+tag.getName());
 
-        return "default/index";
+        return "front/index";
     }
 
     @GetMapping(value = "/tag/{name:[A-Za-z]\\w+}")
@@ -132,7 +132,7 @@ public class AppController {
         model.addAttribute("articles", articleService.findPublishedArticleByTag(tag.getId(), pageable ));
         model.addAttribute("title", "Tag: "+tag.getName());
 
-        return "default/index";
+        return "front/index";
     }
 
     @ModelAttribute
