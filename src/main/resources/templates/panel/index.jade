@@ -1,0 +1,50 @@
+extends ./panel-layout
+
+include ./includes/mixins-panel.jade
+
+mixin sortIndicator(sMode, mode)
+
+  if sMode == mode || sMode+'_DESC' == mode
+    if mode.isDesc()
+        i.fas.fa-sort-amount-down
+    else
+        i.fas.fa-sort-amount-up
+  block
+
+block content
+
+  - var params = pagerParamsHelper.getSortParamsString(articles.getPageable())
+  - var sortMode = sortModeHelper.findModeByParamString(params)
+  - var offset = articles.getPageable().getOffset()
+
+  h1= title
+
+  table.table.table-striped
+    tr
+      th #
+      th id
+      th: +sortIndicator('TITLE', sortMode)  title
+      th: +sortIndicator('AUTHOR', sortMode)  author
+      th: +sortIndicator('SECTION', sortMode)  section
+      th: +sortIndicator('DATE', sortMode)  publication date
+      th published
+
+    for article, i in articles
+      tr
+        td= i +offset +1
+        td= article.id
+        td= article.title
+        td= article.author.firstname +' '+ article.author.lastname
+        td= article.section.name
+        td= article.publicationDate.format(dtFormatter)
+
+        if article.published
+           td published
+        else
+           td not published
+
+  .btn-toolbar
+      +pageSizeBox(articles, ' articles per page')
+      +sortBox(articles)
+      .btn-group.mr-2
+        +pagerBox(articles)

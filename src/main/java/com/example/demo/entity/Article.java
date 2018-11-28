@@ -115,7 +115,7 @@ public class Article {
         this.tags = tags;
     }
 
-    public boolean isPublicated() {
+    public boolean isPublished() {
         return published;
     }
 

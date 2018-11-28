@@ -9,23 +9,25 @@ public class SortModeHelper {
 
     public enum OrderMode {
 
-        NONE("none", ""),
-        DATE("by date - ascending", "&sort=publicationDate,ASC"),
-        DATE_DESC("by date - descending", "&sort=publicationDate,DESC"),
-        AUTHOR("by author - ascending", "&sort=author.lastname,ASC&sort=author.firstname,ASC"),
-        AUTHOR_DESC("by author - descending", "&sort=author.lastname,DESC&sort=author.firstname,DESC"),
-        TITLE("by title - ascending", "&sort=title,ASC"),
-        TITLE_DESC("by title - descending", "&sort=title,DESC"),
-        SECTION("by section - ascending", "&sort=section.name,ASC"),
-        SECTION_DESC("by section - descending", "&sort=section.name,DESC")
+        NONE("none", "", false),
+        DATE("by date - ascending", "&sort=publicationDate,ASC", false),
+        DATE_DESC("by date - descending", "&sort=publicationDate,DESC", true),
+        AUTHOR("by author - ascending", "&sort=author.lastname,ASC&sort=author.firstname,ASC", false),
+        AUTHOR_DESC("by author - descending", "&sort=author.lastname,DESC&sort=author.firstname,DESC", true),
+        TITLE("by title - ascending", "&sort=title,ASC", false),
+        TITLE_DESC("by title - descending", "&sort=title,DESC", true),
+        SECTION("by section - ascending", "&sort=section.name,ASC", false),
+        SECTION_DESC("by section - descending", "&sort=section.name,DESC", true)
         ;
 
         private String name;
         private String paramString;
+        private boolean desc;
 
-        OrderMode(String name, String paramString) {
+        OrderMode(String name, String paramString, boolean desc) {
             this.name = name;
             this.paramString = paramString;
+            this.desc = desc;
         }
 
         public String getName() {
@@ -34,6 +36,10 @@ public class SortModeHelper {
 
         public String getParamString() {
             return paramString;
+        }
+
+        public boolean isDesc() {
+            return desc;
         }
     }
 

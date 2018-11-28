@@ -1,0 +1,60 @@
+mixin pageSizeBox(pageable, itemsPerPageText)
+
+  - var params = pagerParamsHelper.getSortParamsString(pageable.getPageable())
+  - var offset = pageable.getPageable().getOffset()
+
+  .btn-group.mr-2
+    button(class="btn btn-secondary dropdown-toggle" type="button" id="dropdownPageSizeMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")= pageable['size'] + itemsPerPageText
+    .dropdown-menu(aria-labelledby="dropdownPageSizeMenuButton")
+       each pageSize in pageSizeHelper.getPageSizeList();
+         if pageSize == pageable['size']
+           span.dropdown-item.disabled= pageSize + itemsPerPageText
+         else
+           - var newPage = offset/pageSize
+           a(href="?page="+ newPage +"&size=" +pageSize +params).dropdown-item= pageSize + itemsPerPageText
+
+mixin sortBox(pageable)
+
+  - var params = pagerParamsHelper.getSortParamsString(pageable.getPageable())
+  - var sortName = sortModeHelper.findModeByParamString(params).name
+
+  .btn-group.mr-2
+    button(class="btn btn-secondary dropdown-toggle" type="button" id="dropdownSortMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")= 'sort ' + sortName
+    .dropdown-menu(aria-labelledby="dropdownSortMenuButton")
+       each orderMode in sortModeHelper.getAllModes()
+         if sortName == orderMode.name
+           span.dropdown-item.disabled= orderMode.name
+         else
+           a(href="/panel?page="+ pageable.number +"&size="+pageable['size'] +orderMode.paramString).dropdown-item= orderMode.name
+
+mixin pagerBox(pageable)
+
+    - var sizeParams = pagerParamsHelper.getSizeAndSortParamsString(articles.getPageable())
+
+    if (!pageable.isFirst())
+      a(href="?page=0" + sizeParams).btn.btn-secondary &laquo;
+    else
+      span.btn.btn-secondary.disabled &laquo;
+
+    if (pageable.hasPrevious())
+      a(href='?page='+(pageable.number-1) + sizeParams).btn.btn-secondary &lsaquo;
+    else
+      span.btn.btn-secondary.disabled &lsaquo;
+
+    - var p=0
+    while p < pageable.totalPages
+      if (p==pageable.number)
+        span.btn.btn-secondary.active= p+1
+      else
+        a(href="?page="+(p) +sizeParams).btn.btn-secondary= p+1
+      - p++
+
+    if (pageable.hasNext())
+      a(href="?page="+(pageable.number+1) +sizeParams).btn.btn-secondary &rsaquo;
+    else
+      span.btn.btn-secondary.disabled &rsaquo;
+
+    if (!pageable.isLast())
+      a(href="?page="+(pageable.totalPages-1) +sizeParams).btn.btn-secondary &raquo;
+    else
+      span.btn.btn-secondary.disabled &raquo;
