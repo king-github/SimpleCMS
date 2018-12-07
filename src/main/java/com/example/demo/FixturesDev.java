@@ -8,6 +8,7 @@ import com.example.demo.repository.AuthorRepository;
 import com.example.demo.repository.TagRepository;
 import com.example.demo.entity.Article;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component
+@Profile("dev")
 public class FixturesDev {
 
     private final int NUM_OF_ARTICLES = 55;

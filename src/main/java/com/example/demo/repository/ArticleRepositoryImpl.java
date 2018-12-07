@@ -55,40 +55,42 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
                 final Join<Article, Author> authors = root.join("author", JoinType.LEFT);
                 final Join<Article, Section> sections = root.join("section", JoinType.LEFT);
 
-                List<Predicate> list = new ArrayList<>();
+                List<Predicate> predicateList = new ArrayList<>();
 
                 if (articleSearchForm.getTitle() != null && !articleSearchForm.getTitle().isEmpty())
-                   list.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), "%"+articleSearchForm.getTitle()+"%"));
+                   predicateList.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("title")),
+                           "%"+articleSearchForm.getTitle().toLowerCase()+"%"));
 
                 if (articleSearchForm.getFirstname() != null && !articleSearchForm.getFirstname().isEmpty())
-                    list.add(criteriaBuilder.like(criteriaBuilder.lower(authors.get("firstname")), "%"+articleSearchForm.getFirstname()+"%"));
+                    predicateList.add(criteriaBuilder.like(criteriaBuilder.lower(authors.get("firstname")),
+                           "%"+articleSearchForm.getFirstname().toLowerCase()+"%"));
 
                 if (articleSearchForm.getLastname() != null && !articleSearchForm.getLastname().isEmpty())
-                    list.add(criteriaBuilder.like(criteriaBuilder.lower(authors.get("lastname")), "%"+articleSearchForm.getLastname()+"%"));
+                    predicateList.add(criteriaBuilder.like(criteriaBuilder.lower(authors.get("lastname")),
+                           "%"+articleSearchForm.getLastname().toLowerCase()+"%"));
 
                 if (articleSearchForm.getSectionId() != null)
-                    list.add(criteriaBuilder.equal(sections.get("id"), articleSearchForm.getSectionId()));
+                    predicateList.add(criteriaBuilder.equal(sections.get("id"),
+                            articleSearchForm.getSectionId()));
 
                 if (articleSearchForm.getPublished() != null)
-                    list.add(criteriaBuilder.equal(root.get("published"), articleSearchForm.getPublished()));
+                    predicateList.add(criteriaBuilder.equal(root.get("published"),
+                            articleSearchForm.getPublished()));
 
                 if (articleSearchForm.getDateFrom() != null) {
-                    list.add(criteriaBuilder.greaterThanOrEqualTo(root.get("publicationDate"),
-                            LocalDateTime.of(articleSearchForm.getDateFrom(), LocalTime.of(0, 0))));
+                    predicateList.add(criteriaBuilder.greaterThanOrEqualTo(root.get("publicationDate"),
+                            LocalDateTime.of(articleSearchForm.getDateFrom(),
+                                    LocalTime.of(0, 0))));
                 }
                 if (articleSearchForm.getDateTo() != null) {
-                    list.add(criteriaBuilder.lessThanOrEqualTo(root.get("publicationDate"),
-                            LocalDateTime.of(articleSearchForm.getDateTo(), LocalTime.of(23,59,59,999999999))));
+                    predicateList.add(criteriaBuilder.lessThanOrEqualTo(root.get("publicationDate"),
+                            LocalDateTime.of(articleSearchForm.getDateTo(),
+                                    LocalTime.of(23,59,59,999999999))));
                 }
 
-
-                return criteriaBuilder.and(list.toArray(new Predicate[list.size()]));
+                return criteriaBuilder.and(predicateList.toArray(new Predicate[0]));
             });
 
-            System.out.println(where.toString());
-
             return articleRepository.findAll(where, pageable);
-
     }
-
 }
