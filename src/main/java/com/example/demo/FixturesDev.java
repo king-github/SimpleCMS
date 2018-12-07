@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 @Component
 public class FixturesDev {
 
-    private final int NUM_OF_ARTICLES = 20;
+    private final int NUM_OF_ARTICLES = 55;
 
     @Autowired
     private ArticleRepository articleRepository;
@@ -44,16 +44,17 @@ public class FixturesDev {
         Stream.of("movies", "books", "music", "people", "java8")
               .forEach(s -> tagRepository.save(new Tag(s)));
 
-        Section[] sections = { new Section("Programing"), new Section("Games"), new Section("Lifestyle"),
+        Section[] sections = { new Section("Programing"), new Section("Games"),
+                               new Section("Lifestyle"), new Section("Funny"),
                                new Section("Travels"), new Section("Hardware") };
 
         Author[] authors = { new Author("Jony", "Pewnon"), new Author("Andy", "Brandy"), new Author("Phil", "Bill"),
                              new Author("Abdul", "Gewnon"), new Author("Andrew", "Fandy"), new Author("Elisa", "Bill"),
                              new Author("Sam", "Dewnon"), new Author("Jude", "Crandy"), new Author("Mike", "Bill"),
-                             new Author("Johnm", "Salami"), new Author("Agnes", "Fraindy"), new Author("Sylvana", "Upthon")
+                             new Author("John", "Salami"), new Author("Agnes", "Frindy"), new Author("Sylvana", "Athon")
                            };
 
-        for (int i=1; i< NUM_OF_ARTICLES; i++) {
+        for (int i=1; i<= NUM_OF_ARTICLES; i++) {
 
             Article article = new Article("Article title nr: " + i,
                                           "Lorem ipsum czxczx... " + i,
@@ -62,7 +63,9 @@ public class FixturesDev {
 
             article.setSection(sections[random.nextInt(sections.length)]);
             article.setPublished(true);
-            article.setPublicationDate(ZonedDateTime.now().toLocalDateTime().minusMinutes(random.nextInt(60*24*365)));
+            article.setPublicationDate(ZonedDateTime.now()
+                                                    .toLocalDateTime()
+                                                    .minusMinutes(random.nextInt(60*24*365)));
             List<Tag> tags = tagRepository.findAll();
 
             article.setTags( tags.stream()

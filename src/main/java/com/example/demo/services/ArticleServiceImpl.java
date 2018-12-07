@@ -3,9 +3,11 @@ package com.example.demo.services;
 import com.example.demo.entity.Article;
 
 import com.example.demo.error.NotFoundException;
+import com.example.demo.form.panel.ArticleSearchForm;
 import com.example.demo.repository.ArticleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,16 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public Page<Article> getAllArticles(Pageable pageable) {
         return articleRepository.findAll( pageable );
+    }
+
+    @Override
+    public Page<Article> getAllArticles(ArticleSearchForm articleSearchForm, Pageable pageable) {
+        return articleRepository.findArticlesByCriteria(articleSearchForm, pageable);
+    }
+
+    @Override
+    public Page<Article> getAllArticles(Example<Article> example, Pageable pageable) {
+        return articleRepository.findAll(example, pageable);
     }
 
     @Override
@@ -48,6 +60,10 @@ public class ArticleServiceImpl implements ArticleService {
         return articleRepository.findArticleBySectionIdAndPublishedTrue(id, pageable);
     }
 
+    @Override
+    public Page<Article> findArticlesByExample(Article article, Pageable pageable) {
+        return articleRepository.findArticlesByExample(article, pageable);
+    }
 
     @Override
     public void addArticle(Article article) {

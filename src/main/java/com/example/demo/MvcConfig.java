@@ -16,4 +16,6 @@ public class MvcConfig implements WebMvcConfigurer {
 
         System.out.println("hello "+registry);
     }
+
+
 }

@@ -13,22 +13,29 @@ html
       header
         nav#navbarSupportedContent.navbar.navbar-expand-lg.navbar-dark.bg-dark
           a(href="/panel").navbar-brand CMS
-          button(type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation").navbar-toggler
+          button(type="button" data-toggle="collapse" data-target="#mainMenu" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation").navbar-toggler
             span.navbar-toggler-icon
 
-          .collapse.navbar-collapse
+          #mainMenu.collapse.navbar-collapse
             ul.navbar-nav.mr-auto
-              li.nav-item.active
+              li.nav-item
                 a(href="#").nav-link Users
               li.nav-item.active
                 a(href="#").nav-link Articles
-              li.nav-item.active
+              li.nav-item
                 a(href="#").nav-link Sections
+              li.nav-item.dropdown
+                a(href="#" data-toggle="dropdown" role="button" aria-haspopup="true" id="submenuDropdown" aria-expanded="false").nav-link.dropdown-toggle Submenu
+                .dropdown-menu(aria-labelledby="submenuDropdown")
+                  a(href="#").dropdown-item Link 1
+                  a(href="#").dropdown-item Link 2
+                  .dropdown-divider
+                  a(href="#").dropdown-item Link 3
+                  a(href="#").dropdown-item Link 4
 
       .container
         section#content
           block content
-
 
 
 
