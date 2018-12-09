@@ -93,12 +93,12 @@ block content
   table.table.table-striped
     tr
       th #
-      th id
+      th: +sortIndicator('ID', sortMode)  id
       th: +sortIndicator('TITLE', sortMode)  title
       th: +sortIndicator('AUTHOR', sortMode)  author
       th: +sortIndicator('SECTION', sortMode)  section
       th: +sortIndicator('DATE', sortMode)  publication date
-      th published
+      th: +sortIndicator('PUBLISHED', sortMode)  published
 
     for article, i in articles
       tr

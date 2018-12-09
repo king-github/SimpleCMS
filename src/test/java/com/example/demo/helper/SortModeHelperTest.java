@@ -4,6 +4,10 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
 
+import java.util.List;
+
+import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.Matchers.isIn;
 import static org.junit.Assert.*;
 
 public class SortModeHelperTest {
@@ -12,9 +16,22 @@ public class SortModeHelperTest {
     public void getAllModes() {
 
         SortModeHelper sortModeHelper = new SortModeHelper();
-        SortModeHelper.OrderMode[] allModes = sortModeHelper.getAllModes();
+        List<SortModeHelper.OrderMode> allModes = sortModeHelper.getAllModes();
 
-        assertEquals(allModes.length, 9);
+        assertEquals(13, allModes.size());
+    }
+
+    @Test
+    public void getShortListOfModes() {
+
+        SortModeHelper sortModeHelper = new SortModeHelper();
+        List<SortModeHelper.OrderMode> modes = sortModeHelper.getShortListOfModes();
+
+        assertEquals(9, modes.size());
+        assertThat(SortModeHelper.OrderMode.DATE, isIn(modes));
+        assertThat(SortModeHelper.OrderMode.DATE_DESC, isIn(modes));
+        assertThat(SortModeHelper.OrderMode.ID, not(isIn(modes)));
+        assertThat(SortModeHelper.OrderMode.ID_DESC, not((isIn(modes))));
     }
 
     @Test

@@ -95,7 +95,7 @@ mixin sortBox(pageable)
 
   span.dropdown= 'sort ' + sortName
      span.dropdown-content
-       each orderMode in sortModeHelper.getAllModes()
+       each orderMode in sortModeHelper.getShortListOfModes()
          if (sortName != orderMode.name)
             a(href="?page="+ pageable.number +"&size="+pageable['size'] +orderMode.paramString)= orderMode.name
          else
