@@ -7,16 +7,23 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 
 import java.util.Locale;
+import java.util.Map;
 
 @Component
-public class ErrorFormHelperFactory {
+public class FormHelperFactory {
 
     @Autowired
     private MessageSource messageSource;
 
-    public ErrorFormHelper makeErrorFormHelper(BindingResult bindingResult) {
+    public FormHelper makeErrorFormHelper(BindingResult bindingResult) {
 
         Locale locale = LocaleContextHolder.getLocale();
-        return new ErrorFormHelper(messageSource, locale, bindingResult);
+        return new FormHelperBindingResult(messageSource, locale, bindingResult);
+    }
+
+    public FormHelper makeErrorFormHelper(Map<String, Object> map) {
+
+        Locale locale = LocaleContextHolder.getLocale();
+        return new FormHelperMap(messageSource, locale, map);
     }
 }

@@ -64,7 +64,7 @@ public class FixturesDev {
                                           authors[random.nextInt(authors.length)]);
 
             article.setSection(sections[random.nextInt(sections.length)]);
-            article.setPublished(true);
+            article.setPublished(random.nextInt(100) > 10);
             article.setPublicationDate(ZonedDateTime.now()
                                                     .toLocalDateTime()
                                                     .minusMinutes(random.nextInt(60*24*365)));

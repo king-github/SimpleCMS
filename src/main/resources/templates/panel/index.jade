@@ -20,72 +20,74 @@ block content
   h1= title
 
   .btn-toolbar
-    form(method="get" autocomplete="off")
+    form(method="post" autocomplete="off")
      .form-group.row
       .mb-2.col-lg-3
-        label(for="inputTitle") Title
-        input(type="text" class="form-control" id="inputTitle" placeholder="Title" name="title" value=articleSearchForm.title)
+        label(for="inputTitle") Title:
+        input(type="text" class=form.getValidCss("title", "form-control", "form-control is-invalid") id="inputTitle" placeholder="%like%" name="title" value=form.getValueFor("title"))
         .invalid-feedback
-           for err in errors.getMessages("title")
-              span=err
-
-      .mb-2.col-lg-3
-        label(for="inputFirstname") First name
-        input(type="text" class="form-control" id="inputFirstname" placeholder="First name" name="firstname" value=articleSearchForm.firstname)
-
-      .mb-2.col-lg-3
-        label(for="inputLastname") Last name
-        input(type="text" class="form-control" id="inputLastname" placeholder="Last name" name="lastname" value=articleSearchForm.lastname)
-        .invalid-feedback
-           for err in errors.getMessages("title")
+           for err in form.getErrorsFor("title")
              span=err
 
       .mb-2.col-lg-3
-        label(for="inputSection") Section
+        label(for="inputFirstname") First name:
+        input(type="text" class=form.getValidCss("firstname", "form-control", "form-control is-invalid") id="inputFirstname" placeholder="%like%" name="firstname" value=form.getValueFor("firstname"))
+        .invalid-feedback
+           for err in form.getErrorsFor("firstname")
+             span=err
+
+      .mb-2.col-lg-3
+        label(for="inputLastname") Last name:
+        input(type="text" class=form.getValidCss("lastname", "form-control", "form-control is-invalid") id="inputLastname" placeholder="%like%" name="lastname" value=form.getValueFor("lastname"))
+        .invalid-feedback
+           for err in form.getErrorsFor("lastname")
+             span=err
+
+      .mb-2.col-lg-3
+        label(for="inputSection") Section:
         select(id="inputSection" name="sectionId").form-control
-          if articleSearchForm.sectionId
+          if form.getValueFor("sectionId")
             option(value="") All
           else
             option(value="" selected) All
           for section in sections
-            if section.id == articleSearchForm.sectionId
+            if section.id == form.getValueFor("sectionId")
               option(value=section.id selected)= section.name
             else
               option(value=section.id)= section.name
 
       .mb-2.col-lg-3
-        label(for="inputFrom") Date from
-        input(type="text" class=errors.getValidCss("dateFrom", "form-control", "form-control is-invalid") id="inputFrom" placeholder="Date from" name="dateFrom" value=articleSearchForm.dateFrom)
+        label(for="inputFrom") Date from:
+        input(type="text" class=form.getValidCss("dateFrom", "form-control", "form-control is-invalid") id="inputFrom" placeholder="YYYY-MM-DD" name="dateFrom" value=form.getValueFor("dateFrom"))
         .invalid-feedback
-            for err in errors.getMessages("dateFrom")
+            for err in form.getErrorsFor("dateFrom")
               span=err
 
-
       .mb-2.col-lg-3.form-group
-        label(for="inputTo") Date to
-        input(type="text" class=errors.getValidCss("dateTo", "form-control", "form-control is-invalid") id="inputTo" placeholder="Date to" name="dateTo" value=articleSearchForm.dateTo)
+        label(for="inputTo") Date to:
+        input(type="text" class=form.getValidCss("dateTo", "form-control", "form-control is-invalid") id="inputTo" placeholder="YYYY-MM-DD" name="dateTo" value=form.getValueFor("dateTo"))
         .invalid-feedback
-          for err in errors.getMessages("dateTo")
+          for err in form.getErrorsFor("dateTo")
             span=err
 
       .mb-2.col-lg-3
-        label(for="inputPublished") Published
+        label(for="inputPublished") Published:
         select(id="inputPublished" name="published").form-control
-          if articleSearchForm.published==null
+          if form.getValueFor("published")==null
             option(value="" selected) All
           else
             option(value="") All
-          if articleSearchForm.published==true
+          if form.getValueFor("published")==true
             option(value="true" selected) Only published
           else
             option(value="true") Only published
-          if articleSearchForm.published==false
+          if form.getValueFor("published")==false
             option(value="false" selected) Only not published
           else
             option(value="false") Only not published
 
       .mb-2.col-lg-3
-        label(for="inputSubmit") Reload table
+        label(for="inputSubmit") Reload table:
         button(type="submit" id="inputSubmit").btn.btn-secondary.btn-block Filter
 
   table.table.table-striped
@@ -117,6 +119,3 @@ block content
       +sortBox(articles)
       .btn-group.mr-2
         +pagerBox(articles)
-
-
-  .info= info

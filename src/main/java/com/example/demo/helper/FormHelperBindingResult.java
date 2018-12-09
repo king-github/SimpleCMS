@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Locale;
 
 
-public class ErrorFormHelper {
+public class FormHelperBindingResult implements FormHelper {
 
     private MessageSource messageSource;
 
@@ -17,13 +17,14 @@ public class ErrorFormHelper {
 
     private BindingResult bindingResult;
 
-    public ErrorFormHelper(MessageSource messageSource, Locale locale, BindingResult bindingResult) {
+    public FormHelperBindingResult(MessageSource messageSource, Locale locale, BindingResult bindingResult) {
         this.messageSource = messageSource;
         this.locale = locale;
         this.bindingResult = bindingResult;
     }
 
-    public List<String> getMessages(String fieldName) {
+    @Override
+    public List<String> getErrorsFor(String fieldName) {
 
         List<String> msgs = new ArrayList<>();
 
@@ -36,6 +37,15 @@ public class ErrorFormHelper {
         return msgs;
     }
 
+    @Override
+    public Object getValueFor(String fieldName) {
+
+        if (bindingResult != null)
+              return bindingResult.getFieldValue(fieldName);
+        return null;
+    }
+
+    @Override
     public boolean isValid(String fieldName) {
 
         if (bindingResult != null && bindingResult.hasFieldErrors(fieldName))
@@ -44,11 +54,13 @@ public class ErrorFormHelper {
         return true;
     }
 
+    @Override
     public boolean isNotValid(String fieldName) {
 
         return !isValid(fieldName);
     }
 
+    @Override
     public String getValidCss(String fieldName, String validCss, String invalidCss) {
 
         return (isValid(fieldName)) ? validCss : invalidCss;

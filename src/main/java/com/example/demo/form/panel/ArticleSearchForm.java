@@ -2,12 +2,16 @@ package com.example.demo.form.panel;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 public class ArticleSearchForm {
 
+    @Size(max=20)
     private String title;
+    @Size(max=20)
     private String firstname;
+    @Size(max=20)
     private String lastname;
     private Long sectionId;
     private Boolean published;
