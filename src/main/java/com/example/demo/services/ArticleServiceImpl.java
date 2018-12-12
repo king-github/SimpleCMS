@@ -11,6 +11,9 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 
 @Primary
@@ -77,5 +80,15 @@ public class ArticleServiceImpl implements ArticleService {
                                 .orElseThrow(() -> new NotFoundException("Article not found"));
 
     }
+
+    @Transactional
+    @Override
+    public int deleteArticles(Iterable<Long> ids) {
+
+        List<Article> allById = articleRepository.findAllById(ids);
+        articleRepository.deleteInBatch(allById);
+        return allById.size();
+    }
+
 
 }

@@ -11,13 +11,15 @@ mixin sortIndicator(sMode, mode)
         i.fas.fa-sort-amount-up
   block
 
-block content
+block prepend content-header
+  h1= title
 
+
+block content
+  - var allParams = pagerParamsHelper.getParamsString(articles.getPageable())
   - var params = pagerParamsHelper.getSortParamsString(articles.getPageable())
   - var sortMode = sortModeHelper.findModeByParamString(params)
   - var offset = articles.getPageable().getOffset()
-
-  h1= title
 
   .btn-toolbar
     form(method="post" autocomplete="off")
@@ -90,29 +92,34 @@ block content
         label(for="inputSubmit") Reload table:
         button(type="submit" id="inputSubmit").btn.btn-secondary.btn-block Filter
 
-  table.table.table-striped
-    tr
-      th #
-      th: +sortIndicator('ID', sortMode)  id
-      th: +sortIndicator('TITLE', sortMode)  title
-      th: +sortIndicator('AUTHOR', sortMode)  author
-      th: +sortIndicator('SECTION', sortMode)  section
-      th: +sortIndicator('DATE', sortMode)  publication date
-      th: +sortIndicator('PUBLISHED', sortMode)  published
-
-    for article, i in articles
+  form(method="post" action="/panel/delete?"+allParams autocomplete="off")
+    table.table.table-striped.table-hover
       tr
-        td= i +offset +1
-        td= article.id
-        td= article.title
-        td= article.author.firstname +' '+ article.author.lastname
-        td= article.section.name
-        td= article.publicationDate.format(dtFormatter)
+        th #
+        th: +sortIndicator('ID', sortMode)  id
+        th: +sortIndicator('TITLE', sortMode)  title
+        th: +sortIndicator('AUTHOR', sortMode)  author
+        th: +sortIndicator('SECTION', sortMode)  section
+        th: +sortIndicator('DATE', sortMode)  publication date
+        th: +sortIndicator('PUBLISHED', sortMode)  published
+        th select
 
-        if article.published
-           td published
-        else
-           td not published
+      for article, i in articles
+        tr
+          td= i +offset +1
+          td= article.id
+          td= article.title
+          td= article.author.firstname +' '+ article.author.lastname
+          td= article.section.name
+          td= article.publicationDate.format(dtFormatter)
+          td= (article.published) ? "published" : "not published"
+          td
+            input(type="checkbox" name="ids" value=article.id aria-label="select "+article.title)
+
+    .form-group.row.showOnlyIfChecked
+      .mb-2.offset-10.col-lg-2
+         button(type="submit" id="deleteSubmit").btn.btn-secondary.btn-block Delete
+
 
   .btn-toolbar
       +pageSizeBox(articles, ' articles per page')

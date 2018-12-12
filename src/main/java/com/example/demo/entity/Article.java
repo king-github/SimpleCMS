@@ -21,10 +21,10 @@ public class Article {
 
     private boolean published = false;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE })
     private Author author;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE })
     private Section section;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE })

@@ -16,9 +16,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @Controller
@@ -54,7 +59,7 @@ public class ArticlePanelController {
         return new ArticleSearchForm();
     }
 
-    @GetMapping(value = "")
+    @GetMapping()
     public String home (Model model,
                         @PageableDefault(size = ARTICLES_PER_PAGE) Pageable pageable,
                         @ModelAttribute("articleSearchCriteria") ArticleSearchForm articleSearchCriteria
@@ -71,7 +76,7 @@ public class ArticlePanelController {
         return "panel/index";
     }
 
-    @PostMapping(value = "")
+    @PostMapping()
     public String searchForm (Model model,
                               @PageableDefault(size = ARTICLES_PER_PAGE) Pageable pageable,
                               @Valid ArticleSearchForm articleSearchForm,
@@ -91,6 +96,24 @@ public class ArticlePanelController {
         model.addAttribute("title", "Article list");
 
         return "panel/index";
+    }
+
+    @PostMapping("delete")
+    public String deleteForm (Model model,
+                              @PageableDefault(size = ARTICLES_PER_PAGE) Pageable pageable,
+                              @RequestParam(required = false) Long[] ids,
+                              RedirectAttributes redirectAttributes) {
+
+        int count = 0;
+        if (ids != null)
+             count = articleService.deleteArticles(Arrays.asList(ids));
+
+        redirectAttributes.addFlashAttribute("alertInfo", count+" articles have been deleted.");
+
+        logger.info("Articles - delete {} articles", count);
+        String params = new PagerParamsHelper().getParamsString(pageable);
+
+        return "redirect:/panel?"+params;
     }
 
     @ModelAttribute

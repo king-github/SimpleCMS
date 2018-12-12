@@ -35,6 +35,19 @@ html
 
       .container
         section#content
+          block content-header
+            if alertDanger
+              .alert.alert-danger= alertDanger
+
+            if alertWarning
+              .alert.alert-warning= alertWarning
+
+            if alertSuccess
+              .alert.alert-success= alertSuccess
+
+            if alertInfo
+              .alert.alert-info= alertInfo
+
           block content
 
 
