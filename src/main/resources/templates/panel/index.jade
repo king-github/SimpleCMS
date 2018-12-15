@@ -92,7 +92,7 @@ block content
         label(for="inputSubmit") Reload table:
         button(type="submit" id="inputSubmit").btn.btn-secondary.btn-block Filter
 
-  form(method="post" action="/panel/article/delete?"+allParams autocomplete="off")
+  form(method="post" action="/panel/article/delete?"+allParams autocomplete="off")#formDeleteArticles
     table.table.table-striped.table-hover
       tr
         th #
@@ -114,14 +114,30 @@ block content
           td= article.section.name
           td= article.publicationDate ? article.publicationDate.format(dtFormatter) : "never published"
           td= (article.published) ? "published" : "not published"
-          td: input(type="checkbox" name="ids" value=article.id aria-label="select "+article.title)
+          td: input(type="checkbox" name="ids" value=article.id aria-label="select "+article.title).deleteCheckbox
           td: a(href="/panel/article/edit/"+article.id): i.far.fa-edit
 
     .form-group.row
       .mb-2.col-md-2
          a(href="/panel/article/edit" role="button").btn.btn-secondary.btn-block New article
       .mb-2.offset-8.col-md-2
-         button(type="submit" id="deleteSubmit").btn.btn-secondary.btn-block Delete
+         button(type="button" id="deleteSubmit" disabled data-toggle="modal" data-target="#deleteWarningModal").btn.btn-secondary.btn-block Delete
+
+    #deleteWarningModal.modal.fade(tabindex='-1', role='dialog')
+      .modal-dialog.modal-dialog-centered(role='document')
+        .modal-content
+          .modal-header
+            h5.modal-title Delete articles
+            button.close(type='button', data-dismiss='modal', aria-label='Close')
+              span(aria-hidden='true') &times;
+          .modal-body
+            p
+              | Are you sure you want to delete
+              span#numOfDeleteArticles 0
+              |  articles
+          .modal-footer
+            button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+            button.btn.btn-danger(type='submit') Delete
 
 
   .btn-toolbar
