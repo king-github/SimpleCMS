@@ -1,6 +1,9 @@
 package com.example.demo.controller.panel;
 
 import com.example.demo.controller.front.ArticleController;
+import com.example.demo.entity.Article;
+import com.example.demo.form.panel.ArticleForm;
+import com.example.demo.form.panel.ArticleFormArticleConverter;
 import com.example.demo.form.panel.ArticleSearchForm;
 import com.example.demo.form.panel.ArticleSearchFormMapConverter;
 import com.example.demo.helper.*;
@@ -20,14 +23,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Optional;
 
 
 @Controller
-@RequestMapping("panel")
+@RequestMapping("panel/article")
 @SessionAttributes("articleSearchCriteria")
 public class ArticlePanelController {
 
@@ -53,6 +55,11 @@ public class ArticlePanelController {
     @Autowired
     private FormHelperFactory formHelperFactory;
 
+    @Autowired
+    private ArticleFormArticleConverter articleFormArticleConverter;
+
+    @Autowired
+    private  TagHelperFactory tagHelperFactory;
 
     @ModelAttribute("articleSearchCriteria")
     public ArticleSearchForm setUpArticleSearchCriteria() {
@@ -64,7 +71,6 @@ public class ArticlePanelController {
                         @PageableDefault(size = ARTICLES_PER_PAGE) Pageable pageable,
                         @ModelAttribute("articleSearchCriteria") ArticleSearchForm articleSearchCriteria
                         ){
-
 
         logger.info("Articles list");
         model.addAttribute("form", formHelperFactory.makeErrorFormHelper(
@@ -101,20 +107,66 @@ public class ArticlePanelController {
     @PostMapping("delete")
     public String deleteForm (Model model,
                               @PageableDefault(size = ARTICLES_PER_PAGE) Pageable pageable,
-                              @RequestParam(required = false) Long[] ids,
+                              @RequestParam(required = false) Optional<List<Long>> ids,
                               RedirectAttributes redirectAttributes) {
 
-        int count = 0;
-        if (ids != null)
-             count = articleService.deleteArticles(Arrays.asList(ids));
+        int count = articleService.deleteArticles(ids.orElseGet(() -> new ArrayList<>()));
 
         redirectAttributes.addFlashAttribute("alertInfo", count+" articles have been deleted.");
 
         logger.info("Articles - delete {} articles", count);
         String params = new PagerParamsHelper().getParamsString(pageable);
 
-        return "redirect:/panel?"+params;
+        return "redirect:/panel/article?"+params;
     }
+
+    @GetMapping(value = {"edit/{id}", "edit"})
+    public String edit (Model model,
+                        @PathVariable(required = false) Optional<Long> id) {
+
+        logger.info("Articles - edit article with id: {}", id);
+
+        Article article = id.isPresent() ? articleService.findArticle(id.get()) : new Article();
+        ArticleForm articleForm = articleFormArticleConverter.toArticleForm(article);
+
+        model.addAttribute("form", formHelperFactory.makeErrorFormHelper(articleFormArticleConverter.toMap(articleForm)));
+        model.addAttribute("article", article);
+        model.addAttribute("sections", sectionService.getAllSections());
+        model.addAttribute("tagHelper", tagHelperFactory.make());
+        model.addAttribute("title", "Edit article: ");
+        return "panel/edit";
+    }
+
+    @PostMapping(value = {"edit/{id}", "edit"})
+    public String save (Model model,
+                        @PathVariable(required = false) Optional<Long> id,
+                        @Valid ArticleForm articleForm,
+                        BindingResult bindingResult,
+                        RedirectAttributes redirectAttributes) {
+
+        logger.info("Articles - save article with id: {}", id);
+
+        Article article = (id.isPresent()) ? articleService.findArticle(id.get()) : new Article();
+        if(!bindingResult.hasErrors()) {
+            article = articleService.save(articleFormArticleConverter.toArticle(articleForm, article));
+
+            String info = ((id != null) ? "Article has been saved " : "New article has been added ")
+                        + ((article.isPublished()) ? "and is published." : " but is not published.");
+            redirectAttributes.addFlashAttribute("alertInfo", info);
+
+            return "redirect:/panel/article/edit/"+article.getId();
+        } else {
+            model.addAttribute("alertDanger", "Article has not been saved! Form has some errors.");
+        }
+
+        model.addAttribute("form", formHelperFactory.makeErrorFormHelper(bindingResult));
+        model.addAttribute("article", article);
+        model.addAttribute("sections", sectionService.getAllSections());
+        model.addAttribute("tagHelper", tagHelperFactory.make());
+        model.addAttribute("title", "Edit article: ");
+        return "panel/edit";
+    }
+
 
     @ModelAttribute
     private void addDefaultAttributeToModel(Model model) {

@@ -4,9 +4,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 
 public class FormHelperBindingResult implements FormHelper {
@@ -41,7 +39,9 @@ public class FormHelperBindingResult implements FormHelper {
     public Object getValueFor(String fieldName) {
 
         if (bindingResult != null)
-              return bindingResult.getFieldValue(fieldName);
+            return  (bindingResult.getRawFieldValue(fieldName) instanceof Collection<?>)
+                        ? bindingResult.getRawFieldValue(fieldName) : bindingResult.getFieldValue(fieldName);
+
         return null;
     }
 

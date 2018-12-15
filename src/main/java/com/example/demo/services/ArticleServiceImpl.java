@@ -90,5 +90,10 @@ public class ArticleServiceImpl implements ArticleService {
         return allById.size();
     }
 
+    @Override
+    public Article save(Article article) {
+        return articleRepository.save(article);
+    }
+
 
 }

@@ -30,4 +30,6 @@ public interface ArticleService {
     Article findArticle(Long id);
 
     int deleteArticles(Iterable<Long> ids);
+
+    Article save(Article toArticle);
 }

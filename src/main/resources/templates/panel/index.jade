@@ -92,7 +92,7 @@ block content
         label(for="inputSubmit") Reload table:
         button(type="submit" id="inputSubmit").btn.btn-secondary.btn-block Filter
 
-  form(method="post" action="/panel/delete?"+allParams autocomplete="off")
+  form(method="post" action="/panel/article/delete?"+allParams autocomplete="off")
     table.table.table-striped.table-hover
       tr
         th #
@@ -102,7 +102,8 @@ block content
         th: +sortIndicator('SECTION', sortMode)  section
         th: +sortIndicator('DATE', sortMode)  publication date
         th: +sortIndicator('PUBLISHED', sortMode)  published
-        th select
+        th: i.far.fa-check-square
+        th: i.far.fa-edit
 
       for article, i in articles
         tr
@@ -111,13 +112,15 @@ block content
           td= article.title
           td= article.author.firstname +' '+ article.author.lastname
           td= article.section.name
-          td= article.publicationDate.format(dtFormatter)
+          td= article.publicationDate ? article.publicationDate.format(dtFormatter) : "never published"
           td= (article.published) ? "published" : "not published"
-          td
-            input(type="checkbox" name="ids" value=article.id aria-label="select "+article.title)
+          td: input(type="checkbox" name="ids" value=article.id aria-label="select "+article.title)
+          td: a(href="/panel/article/edit/"+article.id): i.far.fa-edit
 
-    .form-group.row.showOnlyIfChecked
-      .mb-2.offset-10.col-lg-2
+    .form-group.row
+      .mb-2.col-md-2
+         a(href="/panel/article/edit" role="button").btn.btn-secondary.btn-block New article
+      .mb-2.offset-8.col-md-2
          button(type="submit" id="deleteSubmit").btn.btn-secondary.btn-block Delete
 
 

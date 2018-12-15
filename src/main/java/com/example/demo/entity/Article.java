@@ -51,6 +51,14 @@ public class Article {
         this.author = author;
     }
 
+    @PrePersist
+    @PreUpdate
+    private void upadatePublicationDate() {
+        if (getPublicationDate() == null && isPublished()) {
+            setPublicationDate(LocalDateTime.now());
+        }
+    }
+
     public Long getId() {
         return id;
     }
