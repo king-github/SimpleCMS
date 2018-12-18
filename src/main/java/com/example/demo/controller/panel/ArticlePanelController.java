@@ -12,7 +12,6 @@ import com.example.demo.services.SectionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
@@ -34,7 +33,7 @@ import java.util.Optional;
 public class ArticlePanelController {
 
     private static final Logger logger = LoggerFactory.getLogger(ArticleController.class);
-    @Value("")
+
     private static final int ARTICLES_PER_PAGE = 10;
 
     @Autowired
@@ -67,16 +66,16 @@ public class ArticlePanelController {
     }
 
     @GetMapping()
-    public String home (Model model,
-                        @PageableDefault(size = ARTICLES_PER_PAGE) Pageable pageable,
-                        @ModelAttribute("articleSearchCriteria") ArticleSearchForm articleSearchCriteria
+    public String index (Model model,
+                         @PageableDefault(size = ARTICLES_PER_PAGE) Pageable pageable,
+                         @ModelAttribute("articleSearchCriteria") ArticleSearchForm articleSearchCriteria
                         ){
 
         logger.info("Articles list");
         model.addAttribute("form", formHelperFactory.makeErrorFormHelper(
                                             ArticleSearchFormMapConverter.from(articleSearchCriteria)));
         model.addAttribute("articles", articleService.getAllArticles(articleSearchCriteria, pageable));
-        model.addAttribute("sections", sectionService.getAllSections());
+
         model.addAttribute("title", "Article list");
 
         return "panel/index";
@@ -98,17 +97,16 @@ public class ArticlePanelController {
         }
         model.addAttribute("articles", articleService.getAllArticles(articleSearchCriteria, pageable));
         model.addAttribute("form", formHelperFactory.makeErrorFormHelper(bindingResult));
-        model.addAttribute("sections", sectionService.getAllSections());
         model.addAttribute("title", "Article list");
 
         return "panel/index";
     }
 
     @PostMapping("delete")
-    public String deleteForm (Model model,
-                              @PageableDefault(size = ARTICLES_PER_PAGE) Pageable pageable,
-                              @RequestParam(required = false) Optional<List<Long>> ids,
-                              RedirectAttributes redirectAttributes) {
+    public String delete (Model model,
+                          @PageableDefault(size = ARTICLES_PER_PAGE) Pageable pageable,
+                          @RequestParam(required = false) Optional<List<Long>> ids,
+                          RedirectAttributes redirectAttributes) {
 
         int count = articleService.deleteArticles(ids.orElseGet(() -> new ArrayList<>()));
 
@@ -131,7 +129,6 @@ public class ArticlePanelController {
 
         model.addAttribute("form", formHelperFactory.makeErrorFormHelper(articleFormArticleConverter.toMap(articleForm)));
         model.addAttribute("article", article);
-        model.addAttribute("sections", sectionService.getAllSections());
         model.addAttribute("tagHelper", tagHelperFactory.make());
         model.addAttribute("title", "Edit article: ");
         return "panel/edit";
@@ -147,10 +144,11 @@ public class ArticlePanelController {
         logger.info("Articles - save article with id: {}", id);
 
         Article article = (id.isPresent()) ? articleService.findArticle(id.get()) : new Article();
+
         if(!bindingResult.hasErrors()) {
             article = articleService.save(articleFormArticleConverter.toArticle(articleForm, article));
 
-            String info = ((id != null) ? "Article has been saved " : "New article has been added ")
+            String info = ((id.isPresent()) ? "Article has been saved " : "New article has been added ")
                         + ((article.isPublished()) ? "and is published." : " but is not published.");
             redirectAttributes.addFlashAttribute("alertInfo", info);
 
@@ -161,7 +159,6 @@ public class ArticlePanelController {
 
         model.addAttribute("form", formHelperFactory.makeErrorFormHelper(bindingResult));
         model.addAttribute("article", article);
-        model.addAttribute("sections", sectionService.getAllSections());
         model.addAttribute("tagHelper", tagHelperFactory.make());
         model.addAttribute("title", "Edit article: ");
         return "panel/edit";
@@ -170,6 +167,7 @@ public class ArticlePanelController {
 
     @ModelAttribute
     private void addDefaultAttributeToModel(Model model) {
+        model.addAttribute("sections", sectionService.getAllSections());
         model.addAttribute("dtFormatter", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         model.addAttribute("pagerParamsHelper", pagerParamsHelper);
         model.addAttribute("sortModeHelper", sortModeHelper);

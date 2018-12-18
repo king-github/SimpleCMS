@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +30,7 @@ import static org.junit.Assert.assertEquals;
 @ActiveProfiles("test")
 @SpringBootTest
 @RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration
 @Transactional
 public class ArticlesDeleteTest {
 
@@ -122,7 +124,7 @@ public class ArticlesDeleteTest {
 	@Test
 	public void removeOnlyArticlesWithIds () {
 
-		int removedCount = articleService.deleteArticles(Arrays.asList(article1.getId(), 90L, 92L, 1099L));
+		int removedCount = articleService.deleteArticles(Arrays.asList(article1.getId(), 90000L, 90001L, 90002L));
 		List<Article> results = repository.findAll();
 
 		assertEquals(1, removedCount);
