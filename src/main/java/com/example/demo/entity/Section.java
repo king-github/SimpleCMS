@@ -18,6 +18,11 @@ public class Section {
 
     }
 
+    public Section(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public Section(String name) {
         this.name = name;
     }

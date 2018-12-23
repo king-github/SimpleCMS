@@ -1,0 +1,64 @@
+extends ../panel-layout
+
+block prepend content-header
+  h1= title
+
+block content
+
+    form(method="post" action="/panel/section/edit" autocomplete="off")
+      table.table.table-striped.table-hover
+        tr
+          th #
+          th id
+          th name
+          th(colspan=2) related articles
+          th: i.fas.fa-trash-alt
+          th: i.fas.fa-edit
+
+        for section, i in sections
+          tr(id="id"+section.id)
+            td= i+1
+            td= section.id
+            td= section.name
+            td= section.quantity
+            td
+            if (section.quantity>0)
+              td: span: i.far.fa-trash-alt
+            else
+              td: a(href="#" onclick="deleteSection("+ section.id+", '"+ section.name+"');return false;"): i.far.fa-trash-alt
+            td: a(href="#" role="button" class="editButton"): i.far.fa-edit
+
+        tr#editFormRow
+          td
+          td
+          td
+            input(type="text" class=form.getValidCss("name", "form-control", "form-control is-invalid")
+                  id="inputEditSectionName" placeholder="Name" name="name" value=form.getValueFor("name"))
+            .invalid-feedback
+                       for err in form.getErrorsFor("name")
+                         span=err
+            input(type="hidden" name="id" value=form.getValueFor("id"))
+          td 0
+          td(colspan=2)
+            button.btn.btn-sm.btn-block.btn-secondary(type='submit')#saveSectionBtn Save section
+          td
+            button.btn.btn-sm.btn-block.btn-secondary(type='button')#cancelSectionBtn.invisible: i.far.fa-window-close
+
+    #deleteWarningModal.modal.fade(tabindex='-1', role='dialog')
+      .modal-dialog.modal-dialog-centered(role='document')
+        .modal-content
+          .modal-header
+            h5.modal-title Delete articles
+            button.close(type='button', data-dismiss='modal', aria-label='Close')
+              span(aria-hidden='true') &times;
+          .modal-body
+            p
+              | Are you sure you want to delete section:
+              strong#deleteSection
+              | ?
+          .modal-footer
+            button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+            form(method="post" action="/panel/section/delete")
+              button.btn.btn-danger(type='submit') Delete
+              input(type="hidden" name="sectionId" value="")#deleteSectionId
+

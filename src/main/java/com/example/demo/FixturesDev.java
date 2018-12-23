@@ -5,6 +5,7 @@ import com.example.demo.entity.Section;
 import com.example.demo.entity.Tag;
 import com.example.demo.repository.ArticleRepository;
 import com.example.demo.repository.AuthorRepository;
+import com.example.demo.repository.SectionRepository;
 import com.example.demo.repository.TagRepository;
 import com.example.demo.entity.Article;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,9 @@ public class FixturesDev {
 
     @Autowired
     private TagRepository tagRepository;
+
+    @Autowired
+    private SectionRepository sectionRepository;
 
     @EventListener
     @Transactional
@@ -76,6 +80,10 @@ public class FixturesDev {
 
             articleRepository.save(article);
         }
+
+        sectionRepository.save(new Section("Empty"));
+        sectionRepository.save(new Section("Clean"));
+        sectionRepository.save(new Section("Notused"));
 
         authorRepository.save(new Author("John", "Nothing"));
         authorRepository.save(new Author("Barry", "Lazy"));
