@@ -88,6 +88,17 @@ $( document ).ready(function() {
 });
 
 
+$( document ).ready(function() {
+
+    let loc = window.location.pathname;
+
+    $("#mainMenu a").each(function(){
+        if ((loc.indexOf($(this).attr('href'))) > -1) {
+            $(this).addClass('active');
+        }
+    })
+});
+
 function deleteSection(id, name) {
 
     $('#deleteSection').text(' '+name);

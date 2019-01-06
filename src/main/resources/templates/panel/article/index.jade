@@ -1,0 +1,145 @@
+extends ../panel-layout
+
+include ../includes/mixins-panel.jade
+
+mixin sortIndicator(sMode, mode)
+
+  if sMode == mode.id || sMode+'_DESC' == mode.id
+    if mode.isDesc()
+        i.fas.fa-sort-amount-down
+    else
+        i.fas.fa-sort-amount-up
+  block
+
+block prepend content-header
+  h1= title
+
+
+block content
+  - var sortMode = sortModeHelper.findModeByParamString(pagerParamsHelper.getSortParamsString(articles.getPageable()));
+  - var offset = articles.getPageable().getOffset()
+
+  .btn-toolbar
+    form(method="post" autocomplete="off")
+     .form-group.row
+      .mb-2.col-lg-3
+        label(for="inputTitle") Title:
+        input(type="text" class=form.getValidCss("title", "form-control", "form-control is-invalid") id="inputTitle" placeholder="%like%" name="title" value=form.getValueFor("title"))
+        .invalid-feedback
+           for err in form.getErrorsFor("title")
+             span=err
+
+      .mb-2.col-lg-3
+        label(for="inputFirstname") First name:
+        input(type="text" class=form.getValidCss("firstname", "form-control", "form-control is-invalid") id="inputFirstname" placeholder="%like%" name="firstname" value=form.getValueFor("firstname"))
+        .invalid-feedback
+           for err in form.getErrorsFor("firstname")
+             span=err
+
+      .mb-2.col-lg-3
+        label(for="inputLastname") Last name:
+        input(type="text" class=form.getValidCss("lastname", "form-control", "form-control is-invalid") id="inputLastname" placeholder="%like%" name="lastname" value=form.getValueFor("lastname"))
+        .invalid-feedback
+           for err in form.getErrorsFor("lastname")
+             span=err
+
+      .mb-2.col-lg-3
+        label(for="inputSection") Section:
+        select(id="inputSection" name="sectionId").form-control
+          if form.getValueFor("sectionId")
+            option(value="") All
+          else
+            option(value="" selected) All
+          for section in sections
+            if section.id == form.getValueFor("sectionId")
+              option(value=section.id selected)= section.name
+            else
+              option(value=section.id)= section.name
+
+      .mb-2.col-lg-3
+        label(for="inputFrom") Date from:
+        input(type="text" class=form.getValidCss("dateFrom", "form-control", "form-control is-invalid") id="inputFrom" placeholder="YYYY-MM-DD" name="dateFrom" value=form.getValueFor("dateFrom"))
+        .invalid-feedback
+            for err in form.getErrorsFor("dateFrom")
+              span=err
+
+      .mb-2.col-lg-3.form-group
+        label(for="inputTo") Date to:
+        input(type="text" class=form.getValidCss("dateTo", "form-control", "form-control is-invalid") id="inputTo" placeholder="YYYY-MM-DD" name="dateTo" value=form.getValueFor("dateTo"))
+        .invalid-feedback
+          for err in form.getErrorsFor("dateTo")
+            span=err
+
+      .mb-2.col-lg-3
+        label(for="inputPublished") Published:
+        select(id="inputPublished" name="published").form-control
+          if form.getValueFor("published")==null
+            option(value="" selected) All
+          else
+            option(value="") All
+          if form.getValueFor("published")==true
+            option(value="true" selected) Only published
+          else
+            option(value="true") Only published
+          if form.getValueFor("published")==false
+            option(value="false" selected) Only not published
+          else
+            option(value="false") Only not published
+
+      .mb-2.col-lg-3
+        label(for="inputSubmit") Reload table:
+        button(type="submit" id="inputSubmit").btn.btn-secondary.btn-block Filter
+
+  form(method="post" action="/panel/article/delete?" +pagerParamsHelper.build() autocomplete="off")#formDeleteArticles
+    table.table.table-striped.table-hover
+      tr
+        th #
+        th: +sortIndicator('ID', sortMode)  id
+        th: +sortIndicator('TITLE', sortMode)  title
+        th: +sortIndicator('AUTHOR', sortMode)  author
+        th: +sortIndicator('SECTION', sortMode)  section
+        th: +sortIndicator('DATE', sortMode)  publication date
+        th: +sortIndicator('PUBLISHED', sortMode)  published
+        th: i.far.fa-check-square
+        th: i.far.fa-edit
+
+      for article, i in articles
+        tr
+          td= i +offset +1
+          td= article.id
+          td= article.title
+          td= article.author.firstname +' '+ article.author.lastname
+          td= article.section.name
+          td= article.publicationDate ? article.publicationDate.format(dtFormatter) : "never published"
+          td= (article.published) ? "published" : "not published"
+          td: input(type="checkbox" name="ids" value=article.id aria-label="select "+article.title).deleteCheckbox
+          td: a(href="/panel/article/edit/"+article.id): i.far.fa-edit
+
+    .form-group.row
+      .mb-2.col-md-2
+         a(href="/panel/article/edit" role="button").btn.btn-secondary.btn-block New article
+      .mb-2.offset-8.col-md-2
+         button(type="button" id="deleteSubmit" disabled data-toggle="modal" data-target="#deleteWarningModal").btn.btn-secondary.btn-block Delete
+
+    #deleteWarningModal.modal.fade(tabindex='-1', role='dialog')
+      .modal-dialog.modal-dialog-centered(role='document')
+        .modal-content
+          .modal-header
+            h5.modal-title Delete articles
+            button.close(type='button', data-dismiss='modal', aria-label='Close')
+              span(aria-hidden='true') &times;
+          .modal-body
+            p
+              | Are you sure you want to delete
+              span#numOfDeleteArticles 0
+              |  articles
+          .modal-footer
+            button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+            button.btn.btn-danger(type='submit') Delete
+
+
+  .btn-toolbar
+      +pageSizeBox(articles, ' articles per page')
+      +sortBox(articles.getSort())
+      .btn-group.mr-2
+        +pagerBox(articles)

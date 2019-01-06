@@ -78,7 +78,7 @@ public class ArticlePanelController {
 
         model.addAttribute("title", "Article list");
 
-        return "panel/index";
+        return "panel/article/index";
     }
 
     @PostMapping()
@@ -100,7 +100,7 @@ public class ArticlePanelController {
         model.addAttribute("form", formHelperFactory.makeErrorFormHelper(bindingResult));
         model.addAttribute("title", "Article list");
 
-        return "panel/index";
+        return "panel/article/index";
     }
 
     @PostMapping("delete")
@@ -132,7 +132,7 @@ public class ArticlePanelController {
         model.addAttribute("article", article);
         model.addAttribute("tagHelper", tagHelperFactory.make());
         model.addAttribute("title", "Edit article: ");
-        return "panel/edit";
+        return "panel/article/edit";
     }
 
     @PostMapping(value = {"edit/{id}", "edit"})
@@ -162,7 +162,7 @@ public class ArticlePanelController {
         model.addAttribute("article", article);
         model.addAttribute("tagHelper", tagHelperFactory.make());
         model.addAttribute("title", "Edit article: ");
-        return "panel/edit";
+        return "panel/article/edit";
     }
 
 
