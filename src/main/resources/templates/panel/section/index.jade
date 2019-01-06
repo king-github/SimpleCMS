@@ -1,5 +1,7 @@
 extends ../panel-layout
 
+include ../includes/mixins-panel.jade
+
 block prepend content-header
   h1= title
 
@@ -62,3 +64,4 @@ block content
               button.btn.btn-danger(type='submit') Delete
               input(type="hidden" name="sectionId" value="")#deleteSectionId
 
+    +sortBox(sort, '/panel/section')

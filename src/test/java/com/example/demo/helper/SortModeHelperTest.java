@@ -1,63 +1,52 @@
 package com.example.demo.helper;
 
+import com.example.demo.helper.order.OrderMode;
 import org.hamcrest.CoreMatchers;
+import org.junit.Before;
 import org.junit.Test;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.Matchers.isIn;
 import static org.junit.Assert.*;
 
 public class SortModeHelperTest {
 
+    private OrderModeHelper sortModeHelper;
+
+    @Before
+    public void before() {
+
+        ArrayList<OrderMode> list = new ArrayList<>();
+        final OrderMode NONE = new OrderMode("NONE", "none", "", false);
+        list.add(NONE);
+        list.add(new OrderMode("ID", "by id - ascending", "&sort=id,ASC", false));
+        list.add(new OrderMode("ID_DESC", "by id - descending", "&sort=id,DESC", true));
+        list.add(new OrderMode("DATE", "by date - ascending", "&sort=publicationDate,ASC", false));
+        list.add(new OrderMode("DATE_DESC", "by date - descending", "&sort=publicationDate,DESC", true));
+
+        sortModeHelper = new OrderModeHelper(list, NONE);
+    }
+
     @Test
     public void getAllModes() {
-
-        SortModeHelper sortModeHelper = new SortModeHelper();
-        List<SortModeHelper.OrderMode> allModes = sortModeHelper.getAllModes();
-
-        assertEquals(13, allModes.size());
-    }
-
-    @Test
-    public void getShortListOfModes() {
-
-        SortModeHelper sortModeHelper = new SortModeHelper();
-        List<SortModeHelper.OrderMode> modes = sortModeHelper.getShortListOfModes();
-
-        assertEquals(9, modes.size());
-        assertThat(SortModeHelper.OrderMode.DATE, isIn(modes));
-        assertThat(SortModeHelper.OrderMode.DATE_DESC, isIn(modes));
-        assertThat(SortModeHelper.OrderMode.ID, not(isIn(modes)));
-        assertThat(SortModeHelper.OrderMode.ID_DESC, not((isIn(modes))));
-    }
-
-    @Test
-    public void getName() {
-
-        SortModeHelper sortModeHelper = new SortModeHelper();
-        assertThat(SortModeHelper.OrderMode.DATE.getName(), CoreMatchers.containsString("date"));
-        assertThat(SortModeHelper.OrderMode.DATE.getName(), CoreMatchers.containsString("ascending"));
-
+        List<OrderMode> allModes = sortModeHelper.getAllModes();
+        assertEquals(5, allModes.size());
     }
 
     @Test
     public void getParamString() {
         // DATE("date ascending", "&sort=date,ASC")
-        SortModeHelper sortModeHelper = new SortModeHelper();
-        assertEquals("&sort=publicationDate,ASC", SortModeHelper.OrderMode.DATE.getParamString());
-
+        OrderMode modeByParamString = sortModeHelper.findModeByParamString("&sort=publicationDate,ASC");
+        assertEquals("&sort=publicationDate,ASC", modeByParamString.getParamString());
     }
 
     @Test
     public void findModeByParamString() {
         // DATE("date ascending", "&sort=date,ASC")
-        SortModeHelper sortModeHelper = new SortModeHelper();
-        String paramString = SortModeHelper.OrderMode.DATE.getParamString();
-        assertEquals(SortModeHelper.OrderMode.DATE, sortModeHelper.findModeByParamString(paramString));
-
+        OrderMode modeByParamString = sortModeHelper.findModeByParamString("&sort=publicationDate,ASC");
+        assertNotNull(modeByParamString);
     }
 
 }

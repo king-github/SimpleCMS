@@ -5,14 +5,16 @@ import com.example.demo.entity.Section;
 import com.example.demo.form.panel.SectionForm;
 import com.example.demo.form.panel.SectionFormSectionConverter;
 import com.example.demo.helper.FormHelperFactory;
+import com.example.demo.helper.OrderModeHelper;
+import com.example.demo.helper.PagerParamsHelper;
 import com.example.demo.services.SectionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
@@ -20,6 +22,7 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("panel/section")
+@SessionAttributes("sort")
 public class SectionPanelController {
 
     @Autowired
@@ -31,43 +34,68 @@ public class SectionPanelController {
     @Autowired
     private FormHelperFactory formHelperFactory;
 
-    @GetMapping()
-    public String index (Model model) {
+    @Autowired
+    @Qualifier("sectionPanelOrderModeHelper")
+    private OrderModeHelper sortModeHelper;
 
-        model.addAttribute("sections", sectionService.getAllSectionsWithQuantity());
+    @ModelAttribute("sort")
+    private Sort setUpSort() { return  Sort.by("name"); }
+
+
+    @GetMapping(value = "")
+    public String index (Model model,
+                         Sort sortCurrent,
+                         @ModelAttribute(value = "sort", binding = false) Sort sort
+                        ) {
+
+        sort = sortCurrent;
+        model.addAttribute("sort", sort);
+        model.addAttribute("sections", sectionService.getAllSectionsWithQuantity(sort));
+        model.addAttribute("sortModeHelper", sortModeHelper);
+        model.addAttribute("pagerParamsHelper", PagerParamsHelper.of(sort));
+        model.addAttribute("sort", sort);
+
         model.addAttribute("form", formHelperFactory
                 .makeErrorFormHelper(sectionFormSectionConverter.toMap(new SectionForm())));
+
         return "panel/section/index";
     }
 
 
     @PostMapping("delete")
     public String delete(Long sectionId,
-                         RedirectAttributes redirectAttributes) {
+                         RedirectAttributes redirectAttributes,
+                         @ModelAttribute(value = "sort", binding = false) Sort sort
+                        ) {
 
-        Optional<SectionWithQuantityDto> deletd = sectionService.delete(sectionId);
+        Optional<SectionWithQuantityDto> deleted = sectionService.delete(sectionId);
 
-        if (deletd.isPresent()) {
+        if (deleted.isPresent()) {
             redirectAttributes.addFlashAttribute("alertInfo",
-                    String.format("Section %s has been deleted.", deletd.get().getName()));
+                    String.format("Section %s has been deleted.", deleted.get().getName()));
         } else {
             redirectAttributes.addFlashAttribute("alertDanger",
                     "Section no exist or has related with some articles.");
         }
 
-        return "redirect:/panel/section";
+        return "redirect:/panel/section?" +PagerParamsHelper.of(sort).build();
     }
 
     @PostMapping("edit")
     public String edit(Model model,
                        @Valid SectionForm sectionForm,
                        BindingResult bindingResult,
-                       RedirectAttributes redirectAttributes) {
+                       RedirectAttributes redirectAttributes,
+                       @ModelAttribute(value = "sort", binding = false) Sort sort
+                       ) {
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("sections", sectionService.getAllSectionsWithQuantity());
+            model.addAttribute("sections", sectionService.getAllSectionsWithQuantity(sort));
             model.addAttribute("form", formHelperFactory.makeErrorFormHelper(bindingResult));
             model.addAttribute("alertDanger", "Section has not been saved! Form has some errors.");
+
+            model.addAttribute("sortModeHelper", sortModeHelper);
+            model.addAttribute("pagerParamsHelper", PagerParamsHelper.of(sort));
             return "panel/section/index";
         }
 
@@ -75,8 +103,7 @@ public class SectionPanelController {
         redirectAttributes.addFlashAttribute("alertInfo",
                     String.format("Section %s has been saved.", sectionForm.getName()));
 
-        return "redirect:/panel/section";
+        return "redirect:/panel/section?" +PagerParamsHelper.of(sort).build();
     }
-
 
 }

@@ -3,9 +3,10 @@ package com.example.demo.controller.front;
 import com.example.demo.entity.Article;
 
 import com.example.demo.entity.Tag;
+import com.example.demo.helper.OrderModeHelper;
 import com.example.demo.helper.PageSizeHelper;
 import com.example.demo.helper.PagerParamsHelper;
-import com.example.demo.helper.SortModeHelper;
+
 import com.example.demo.services.ArticleService;
 import com.example.demo.services.AuthorService;
 import com.example.demo.services.SectionService;
@@ -14,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
@@ -44,10 +46,8 @@ public class ArticleController {
     private SectionService sectionService;
 
     @Autowired
-    private PagerParamsHelper pagerParamsHelper;
-
-    @Autowired
-    private SortModeHelper sortModeHelper;
+    @Qualifier("articleFrontOrderModeHelper")
+    private OrderModeHelper sortModeHelper;
 
     @Autowired
     private PageSizeHelper pageSizeHelper;
@@ -62,6 +62,7 @@ public class ArticleController {
 
         model.addAttribute("articles", articleService.getAllPublishedArticles( pageable ));
         model.addAttribute("title", "Home Page");
+        model.addAttribute("pagerParamsHelper", PagerParamsHelper.of(pageable));
 
         return "front/index";
     }
@@ -88,6 +89,7 @@ public class ArticleController {
 
         model.addAttribute("articles", articleService.findPublishedArticleByAuthor(id, pageable ));
         model.addAttribute("title", "Home Page");
+        model.addAttribute("pagerParamsHelper", PagerParamsHelper.of(pageable));
 
         return "front/index";
     }
@@ -102,6 +104,7 @@ public class ArticleController {
 
         model.addAttribute("articles", articleService.findPublishedArticleBySection(id, pageable ));
         model.addAttribute("title", "Home Page");
+        model.addAttribute("pagerParamsHelper", PagerParamsHelper.of(pageable));
 
         return "front/index";
     }
@@ -116,6 +119,7 @@ public class ArticleController {
         Tag tag = tagService.findTagById(id);
         model.addAttribute("articles", articleService.findPublishedArticleByTag(tag.getId(), pageable ));
         model.addAttribute("title", "Tag: "+tag.getName());
+        model.addAttribute("pagerParamsHelper", PagerParamsHelper.of(pageable));
 
         return "front/index";
     }
@@ -131,6 +135,7 @@ public class ArticleController {
         Tag tag = tagService.findTagByName(name);
         model.addAttribute("articles", articleService.findPublishedArticleByTag(tag.getId(), pageable ));
         model.addAttribute("title", "Tag: "+tag.getName());
+        model.addAttribute("pagerParamsHelper", PagerParamsHelper.of(pageable));
 
         return "front/index";
     }
@@ -141,7 +146,6 @@ public class ArticleController {
         model.addAttribute("authors", authorService.getAllAuthorsWithQuantity());
         model.addAttribute("sections", sectionService.getAllSections());
         model.addAttribute("dtFormatter", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        model.addAttribute("pagerParamsHelper", pagerParamsHelper);
         model.addAttribute("sortModeHelper", sortModeHelper);
         model.addAttribute("pageSizeHelper", pageSizeHelper);
     }

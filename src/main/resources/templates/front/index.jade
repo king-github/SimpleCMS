@@ -4,7 +4,7 @@ include ./includes/mixins-main
 
 
 block content
-  - var params = '?'+pagerParamsHelper.getSizeAndSortParamsString(articles.getPageable())
+  - var params = '?'+pagerParamsHelper.build()
 
   for article in articles
     +articleHead(article)

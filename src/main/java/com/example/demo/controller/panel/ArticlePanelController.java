@@ -12,6 +12,7 @@ import com.example.demo.services.SectionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
@@ -43,13 +44,11 @@ public class ArticlePanelController {
     private SectionService sectionService;
 
     @Autowired
-    private SortModeHelper sortModeHelper;
+    @Qualifier("articlePanelOrderModeHelper")
+    private OrderModeHelper sortModeHelper;
 
     @Autowired
     private PageSizeHelper pageSizeHelper;
-
-    @Autowired
-    private PagerParamsHelper pagerParamsHelper;
 
     @Autowired
     private FormHelperFactory formHelperFactory;
@@ -75,6 +74,7 @@ public class ArticlePanelController {
         model.addAttribute("form", formHelperFactory.makeErrorFormHelper(
                                             ArticleSearchFormMapConverter.from(articleSearchCriteria)));
         model.addAttribute("articles", articleService.getAllArticles(articleSearchCriteria, pageable));
+        model.addAttribute("pagerParamsHelper", PagerParamsHelper.of(pageable));
 
         model.addAttribute("title", "Article list");
 
@@ -95,6 +95,7 @@ public class ArticlePanelController {
             articleSearchCriteria = articleSearchForm;
             model.addAttribute("articleSearchCriteria", articleSearchCriteria);
         }
+        model.addAttribute("pagerParamsHelper", PagerParamsHelper.of(pageable));
         model.addAttribute("articles", articleService.getAllArticles(articleSearchCriteria, pageable));
         model.addAttribute("form", formHelperFactory.makeErrorFormHelper(bindingResult));
         model.addAttribute("title", "Article list");
@@ -113,7 +114,7 @@ public class ArticlePanelController {
         redirectAttributes.addFlashAttribute("alertInfo", count+" articles have been deleted.");
 
         logger.info("Articles - delete {} articles", count);
-        String params = new PagerParamsHelper().getParamsString(pageable);
+        String params = PagerParamsHelper.of(pageable).build();
 
         return "redirect:/panel/article?"+params;
     }
@@ -169,7 +170,6 @@ public class ArticlePanelController {
     private void addDefaultAttributeToModel(Model model) {
         model.addAttribute("sections", sectionService.getAllSections());
         model.addAttribute("dtFormatter", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        model.addAttribute("pagerParamsHelper", pagerParamsHelper);
         model.addAttribute("sortModeHelper", sortModeHelper);
         model.addAttribute("pageSizeHelper", pageSizeHelper);
     }

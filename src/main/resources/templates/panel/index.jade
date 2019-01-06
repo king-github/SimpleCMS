@@ -4,7 +4,7 @@ include ./includes/mixins-panel.jade
 
 mixin sortIndicator(sMode, mode)
 
-  if sMode == mode || sMode+'_DESC' == mode
+  if sMode == mode.id || sMode+'_DESC' == mode.id
     if mode.isDesc()
         i.fas.fa-sort-amount-down
     else
@@ -16,9 +16,7 @@ block prepend content-header
 
 
 block content
-  - var allParams = pagerParamsHelper.getParamsString(articles.getPageable())
-  - var params = pagerParamsHelper.getSortParamsString(articles.getPageable())
-  - var sortMode = sortModeHelper.findModeByParamString(params)
+  - var sortMode = sortModeHelper.findModeByParamString(pagerParamsHelper.getSortParamsString(articles.getPageable()));
   - var offset = articles.getPageable().getOffset()
 
   .btn-toolbar
@@ -92,7 +90,7 @@ block content
         label(for="inputSubmit") Reload table:
         button(type="submit" id="inputSubmit").btn.btn-secondary.btn-block Filter
 
-  form(method="post" action="/panel/article/delete?"+allParams autocomplete="off")#formDeleteArticles
+  form(method="post" action="/panel/article/delete?" +pagerParamsHelper.build() autocomplete="off")#formDeleteArticles
     table.table.table-striped.table-hover
       tr
         th #
@@ -142,6 +140,6 @@ block content
 
   .btn-toolbar
       +pageSizeBox(articles, ' articles per page')
-      +sortBox(articles)
+      +sortBox(articles.getSort())
       .btn-group.mr-2
         +pagerBox(articles)

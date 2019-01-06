@@ -1,6 +1,5 @@
 mixin pageSizeBox(pageable, itemsPerPageText)
 
-  - var params = pagerParamsHelper.getSortParamsString(pageable.getPageable())
   - var offset = pageable.getPageable().getOffset()
 
   .btn-group.mr-2
@@ -11,12 +10,13 @@ mixin pageSizeBox(pageable, itemsPerPageText)
            span.dropdown-item.disabled= pageSize + itemsPerPageText
          else
            - var newPage = offset/pageSize
-           a(href="?page="+ newPage +"&size=" +pageSize +params).dropdown-item= pageSize + itemsPerPageText
+           a(href="?" +pagerParamsHelper.withPage(newPage).withSize(pageSize).build()).dropdown-item= pageSize + itemsPerPageText
 
-mixin sortBox(pageable)
 
-  - var params = pagerParamsHelper.getSortParamsString(pageable.getPageable())
-  - var sortName = sortModeHelper.findModeByParamString(params).name
+mixin sortBox(sort, url)
+
+  - url = url +'?';
+  - var sortName = sortModeHelper.findModeByParamString(pagerParamsHelper.getSortParamsString(sort)).name
 
   .btn-group.mr-2
     button(class="btn btn-secondary dropdown-toggle" type="button" id="dropdownSortMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")= 'sort ' + sortName
@@ -25,19 +25,18 @@ mixin sortBox(pageable)
          if sortName == orderMode.name
            span.dropdown-item.disabled= orderMode.name
          else
-           a(href="/panel/article?page="+ pageable.number +"&size="+pageable['size'] +orderMode.paramString).dropdown-item= orderMode.name
+           a(href=url +pagerParamsHelper.withSort(orderMode.paramString).build()).dropdown-item= orderMode.name
+
 
 mixin pagerBox(pageable)
 
-    - var sizeParams = pagerParamsHelper.getSizeAndSortParamsString(articles.getPageable())
-
     if (!pageable.isFirst())
-      a(href="?page=0" + sizeParams).btn.btn-secondary &laquo;
+      a(href='?' +pagerParamsHelper.withPage(0).build()).btn.btn-secondary &laquo;
     else
       span.btn.btn-secondary.disabled &laquo;
 
     if (pageable.hasPrevious())
-      a(href='?page='+(pageable.number-1) + sizeParams).btn.btn-secondary &lsaquo;
+      a(href='?' +pagerParamsHelper.withPage(pageable.number-1).build()).btn.btn-secondary &lsaquo;
     else
       span.btn.btn-secondary.disabled &lsaquo;
 
@@ -46,15 +45,15 @@ mixin pagerBox(pageable)
       if (p==pageable.number)
         span.btn.btn-secondary.active= p+1
       else
-        a(href="?page="+(p) +sizeParams).btn.btn-secondary= p+1
+        a(href='?' +pagerParamsHelper.withPage(p).build()).btn.btn-secondary= p+1
       - p++
 
     if (pageable.hasNext())
-      a(href="?page="+(pageable.number+1) +sizeParams).btn.btn-secondary &rsaquo;
+      a(href='?' +pagerParamsHelper.withPage(pageable.number+1).build()).btn.btn-secondary &rsaquo;
     else
       span.btn.btn-secondary.disabled &rsaquo;
 
     if (!pageable.isLast())
-      a(href="?page="+(pageable.totalPages-1) +sizeParams).btn.btn-secondary &raquo;
+      a(href='?' +pagerParamsHelper.withPage(pageable.totalPages-1).build()).btn.btn-secondary &raquo;
     else
       span.btn.btn-secondary.disabled &raquo;

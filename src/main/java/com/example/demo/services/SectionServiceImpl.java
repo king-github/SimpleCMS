@@ -5,6 +5,7 @@ import com.example.demo.entity.Section;
 import com.example.demo.repository.SectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,9 +27,9 @@ public class SectionServiceImpl implements SectionService {
     }
 
     @Override
-    public List<SectionWithQuantityDto> getAllSectionsWithQuantity() {
+    public List<SectionWithQuantityDto> getAllSectionsWithQuantity(Sort sort) {
 
-        return sectionRepository.getAllSectionsWithQuantity();
+        return sectionRepository.getAllSectionsWithQuantity(sort);
     }
 
     @Override
