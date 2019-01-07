@@ -8,6 +8,18 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+@NamedEntityGraphs({
+  @NamedEntityGraph(name = "allFetch", attributeNodes = {
+        @NamedAttributeNode("author"),
+        @NamedAttributeNode("section"),
+        @NamedAttributeNode("tags")
+  }),
+  @NamedEntityGraph(name = "noFetchTags", attributeNodes = {
+        @NamedAttributeNode("author"),
+        @NamedAttributeNode("section")
+  })
+})
+
 @Entity
 public class Article {
 
