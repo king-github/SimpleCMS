@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component
-@Profile("dev")
+@Profile({"dev", "dev2"})
 public class FixturesDev {
 
     private final int NUM_OF_ARTICLES = 55;

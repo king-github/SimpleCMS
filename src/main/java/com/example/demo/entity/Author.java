@@ -16,7 +16,6 @@ public class Author {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "author")
     private List<Article> articles = new ArrayList<>();
 
-
     public Author() {
     }
 

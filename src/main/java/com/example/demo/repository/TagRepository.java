@@ -19,7 +19,7 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
     @Query(nativeQuery = true)
     List<TagWithQuantityDto> countArticlesGroupedByTagName();
 
-    @Query(value="SELECT COUNT(*) FROM ARTICLE_TAG AS AT WHERE AT.TAG_ID = :tagId", nativeQuery = true)
+    @Query(value="SELECT COUNT(*) FROM article_tag AS at WHERE at.tag_id = :tagId", nativeQuery = true)
     Integer countArticlesWithTagId(@Param("tagId") Long tagId);
 
 }
