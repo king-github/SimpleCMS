@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -24,7 +25,9 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 
 @ActiveProfiles("test")
@@ -32,7 +35,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
 @Transactional
-public class ArticlesDeleteTest {
+public class ArticlesRepositoryTest {
 
 	@Autowired
 	private ArticleRepository repository;
@@ -106,7 +109,8 @@ public class ArticlesDeleteTest {
 	@Test
 	public void giveAllIdsThenDeleteAllArticles () {
 
-		int removedCount = articleService.deleteArticles(Arrays.asList(article1.getId(), article2.getId(), article3.getId()));
+		int removedCount = articleService.deleteArticles(
+		        Arrays.asList(article1.getId(), article2.getId(), article3.getId()));
 		List<Article> results = repository.findAll();
 		List<Author> authors = authorRepository.findAll();
 		List<Section> sections = sectionRepository.findAll();
@@ -124,16 +128,64 @@ public class ArticlesDeleteTest {
 	@Test
 	public void removeOnlyArticlesWithIds () {
 
-		int removedCount = articleService.deleteArticles(Arrays.asList(article1.getId(), 90000L, 90001L, 90002L));
+        long removedCount = articleService.deleteArticles(Arrays.asList(article1.getId(), 90L, 91L, 92L));
 		List<Article> results = repository.findAll();
 
-		assertEquals(1, removedCount);
+		assertEquals(1L, removedCount);
 		assertEquals(2, results.size());
 
-		assertEquals(0, tagRepository.countArticlesWithTagId(tag1.getId()).intValue());
-		assertEquals(1, tagRepository.countArticlesWithTagId(tag2.getId()).intValue());
-		assertEquals(2, tagRepository.countArticlesWithTagId(tag3.getId()).intValue());
+		assertEquals(0L, tagRepository.countArticlesWithTagId(tag1.getId()).longValue());
+		assertEquals(1L, tagRepository.countArticlesWithTagId(tag2.getId()).longValue());
+		assertEquals(2L, tagRepository.countArticlesWithTagId(tag3.getId()).longValue());
 	}
 
+	@Test
+	public void givenTagId_whenFindAllArticlesByTagId_thenGetArticlesWithCorrectTagsSets(){
+
+		List<Article> results = repository.findAllArticlesByTagId(tag3.getId());
+
+		assertEquals(3L, results.size());
+		assertThat(results, containsInAnyOrder(article1, article2, article3));
+
+        assertThat(results, hasItems(allOf(hasProperty("id", equalTo(article1.getId())),
+                                           hasProperty("tags", containsInAnyOrder(tag1, tag2, tag3))),
+                                     allOf(hasProperty("id", equalTo(article2.getId())),
+                                           hasProperty("tags", containsInAnyOrder(tag2, tag3))),
+                                     allOf(hasProperty("id", equalTo(article3.getId())),
+                                           hasProperty("tags", containsInAnyOrder(tag3)))
+                            )
+        );
+	}
+
+    @Test
+    public void givenTagId_whenFindAllArticlesByTagId_thenGetPublishedArticlesWithCorrectTagsSets(){
+
+        Page<Article> page = repository.findArticleByTagIdAndPublished(tag3.getId(),
+                PageRequest.of(0, 10));
+
+		List<Article> results = page.getContent();
+
+		assertEquals(2L, page.getTotalElements());
+		assertEquals(2L, results.size());
+        assertThat(results, containsInAnyOrder(article1, article2));
+        assertThat(results, hasItems(allOf(hasProperty("id", equalTo(article1.getId())),
+                                           hasProperty("tags", hasSize(3)),
+                                           hasProperty("tags", containsInAnyOrder(tag1, tag2, tag3))),
+                                     allOf(hasProperty("id", equalTo(article2.getId())),
+                                           hasProperty("tags", hasSize(2)),
+                                           hasProperty("tags", containsInAnyOrder(tag2, tag3)))
+                )
+        );
+    }
+
+	@Test
+	public void givenTagId_whenFindAllArticlesByTagId_thenGetPublishedArticlesWithCorrectTotalElements(){
+
+		Page<Article> page = repository.findArticleByTagIdAndPublished(tag3.getId(),
+				PageRequest.of(0, 1));
+
+		assertEquals(2L, page.getTotalElements());
+
+	}
 
 }

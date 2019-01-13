@@ -34,7 +34,7 @@ function revertEditForm() {
         tdsForm.eq(2).find('input[type=hidden]').val("");
         tdsForm.eq(3).html("0");
 
-        $('#cancelSectionBtn').addClass('invisible');
+        $('#cancelBtn').addClass('invisible');
         lastTr.show();
         lastTr = null;
     }
@@ -59,7 +59,7 @@ console.log(idRow);
     tdsForm.eq(2).find('input[type=hidden]').val(id);
     tdsForm.eq(3).html(tds.eq(3).html());
 
-    $('#cancelSectionBtn').removeClass('invisible');
+    $('#cancelBtn').removeClass('invisible');
     $('#editFormRow').insertAfter(lastTr);
     $('#editFormRow').show();
     lastTr.insertAfter(lastTr.parent().find('tr').last())
@@ -75,7 +75,7 @@ $('.editButton').click(function(){
 });
 
 
-$('#cancelSectionBtn').click(function() {
+$('#cancelBtn').click(function() {
 
    revertEditForm();
    clearFormErrors();
@@ -99,9 +99,16 @@ $( document ).ready(function() {
     })
 });
 
-function deleteSection(id, name) {
+function deleteRow(id, name) {
 
-    $('#deleteSection').text(' '+name);
-    $('#deleteSectionId').val(id);
+    $('#deleteRow').text(' '+name);
+    $('#deleteRowId').val(id);
     $('#deleteWarningModal').modal('show');
 };
+
+//function deleteTag(id, name) {
+//
+//    $('#deleteTag').text(' '+name);
+//    $('#deleteTagId').val(id);
+//    $('#deleteWarningModal').modal('show');
+//};

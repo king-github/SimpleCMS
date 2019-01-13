@@ -6,18 +6,15 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @NamedEntityGraphs({
-  @NamedEntityGraph(name = "allFetch", attributeNodes = {
-        @NamedAttributeNode("author"),
-        @NamedAttributeNode("section"),
-        @NamedAttributeNode("tags")
-  }),
-  @NamedEntityGraph(name = "noFetchTags", attributeNodes = {
-        @NamedAttributeNode("author"),
-        @NamedAttributeNode("section")
-  })
+  @NamedEntityGraph(name = "Article.allFetch",
+          attributeNodes = {@NamedAttributeNode("author"),
+                            @NamedAttributeNode("section"),
+                            @NamedAttributeNode("tags")}
+  )
 })
 
 @Entity
@@ -39,7 +36,7 @@ public class Article {
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE })
     private Section section;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE })
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
     @JoinTable(name = "article_tag",
                joinColumns = @JoinColumn(name = "article_id"),
                inverseJoinColumns = @JoinColumn(name = "tag_id"))
@@ -157,5 +154,18 @@ public class Article {
 
     public void setUpdateDateTime(LocalDateTime updateDateTime) {
         this.updateDateTime = updateDateTime;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Tag)) return false;
+        Article article = (Article) o;
+        return id != null && id.equals(article.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

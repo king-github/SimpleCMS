@@ -3,6 +3,7 @@ package com.example.demo.entity;
 import com.example.demo.dto.TagWithQuantityDto;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 
 @SqlResultSetMapping(
@@ -12,13 +13,13 @@ import javax.persistence.*;
                 targetClass= TagWithQuantityDto.class,
                 columns={@ColumnResult(name="id", type = Long.class),
                          @ColumnResult(name="name", type = String.class),
-                         @ColumnResult(name="quantity", type = Integer.class)
+                         @ColumnResult(name="quantity", type = Long.class)
                         }
             )
         }
 )
 
-@NamedNativeQuery(name="Tag.countArticlesGroupedByTagName",
+@NamedNativeQuery(name = "Tag.countArticlesGroupedByTagName",
         query = "SELECT t.id, t.name, COUNT(at.tag_id) as quantity " +
                 "FROM article_tag AS at " +
                 "LEFT JOIN tag t ON t.ID = at.tag_id " +
@@ -26,7 +27,7 @@ import javax.persistence.*;
                 "WHERE a.published = TRUE " +
                 "GROUP BY t.name " +
                 "ORDER BY quantity DESC",
-        resultSetMapping="tagDtoMapping")
+        resultSetMapping = "tagDtoMapping")
 
 @Entity
 public class Tag {
@@ -41,6 +42,11 @@ public class Tag {
     }
 
     public Tag(String name) {
+        this.name = name;
+    }
+
+    public Tag(Long id, String name) {
+        this.id = id;
         this.name = name;
     }
 
@@ -60,4 +66,17 @@ public class Tag {
         this.name = name;
     }
 
+    @Override
+    public boolean equals(Object o) {
+
+        if (this == o) return true;
+        if (!(o instanceof Tag)) return false;
+        Tag tag = (Tag) o;
+        return id != null && id.equals(tag.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

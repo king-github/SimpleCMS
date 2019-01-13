@@ -71,11 +71,13 @@ public class ArticleFormArticleConverterTest {
         section2 = new Section("section2");
         section2.setId(24L);
 
-        tags = Arrays.asList(new Tag("tag 1"), new Tag("tag 2"), new Tag("tag 3"));
+        tags = Arrays.asList(new Tag(11L,"tag 1"),
+                             new Tag(12L, "tag 2"),
+                             new Tag(13L, "tag 3"));
 
         articleFormBase = new ArticleForm(11L, "Alf Alfa", "Title 11",
-                                            "Lead text", "Content text", false,
-                                                 7L, tagIds, publicationDT, createDT, lastUpdateDT);
+                                          "Lead text", "Content text", false,
+                                          7L, tagIds, publicationDT, createDT, lastUpdateDT);
 
         tags2 = IntStream.range(6, 9).mapToObj(v -> {
             Tag tag = new Tag("Tag "+v);

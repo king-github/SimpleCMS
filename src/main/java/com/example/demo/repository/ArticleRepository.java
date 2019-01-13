@@ -22,26 +22,44 @@ public interface ArticleRepository extends JpaRepository<Article, Long>,
                                            JpaSpecificationExecutor<Article> {
 
     //@EntityGraph(attributePaths = { "author", "section" })
-    @EntityGraph(value="noFetchTags")
+    @EntityGraph(value="Article.allFetch")
     Page<Article> findAll(@Nullable Specification<Article> var1, Pageable var2);
 
     //@EntityGraph(attributePaths = { "author", "section", "tags" })
-    @EntityGraph(value="allFetch")
+    @EntityGraph(value="Article.allFetch")
     <S extends Article> Page<S> findAll(Example<S> example, Pageable pageable);
 
-    @EntityGraph(value="allFetch")
+    @EntityGraph(value="Article.allFetch")
     Page<Article> findArticleByPublishedTrue(Pageable pageable);
 
-    @EntityGraph(value="allFetch")
+    @EntityGraph(value="Article.allFetch")
     Page<Article> findArticleByAuthorId(Long id, Pageable pageable);
 
-    @EntityGraph(value="allFetch")
+    @EntityGraph(value="Article.allFetch")
     Page<Article> findArticleByAuthorIdAndPublishedTrue(Long id, Pageable pageable);
 
-    @EntityGraph(value="allFetch")
+    @EntityGraph(value="Article.allFetch")
     Page<Article> findArticleBySectionIdAndPublishedTrue(Long id, Pageable pageable);
 
-    @EntityGraph(value="allFetch")
-    @Query("select a from Article a join a.tags t where t.id = ?1 and a.published=TRUE")
-    Page<Article> findArticleByTagIdAndPublished(Long id, Pageable pageable);
+
+    @Query(value = "select a " +
+                   "from Article a " +
+                   "join a.tags t " +
+                   "join fetch a.tags " +
+                   "join fetch a.section " +
+                   "join fetch a.author " +
+                   "where t.id= :id and a.published=TRUE",
+    countQuery = "select COUNT(a) from Article a join a.tags t where t.id= :id and a.published=TRUE")
+    Page<Article> findArticleByTagIdAndPublished(@Param("id") Long id, Pageable pageable);
+
+    //@EntityGraph(value="Article.allFetch", type = LOAD)
+    @Query(value = "select distinct a " +  // distinct needed for h2 patch problem
+           "from Article a " +
+           "join a.tags t " +
+           "join fetch a.tags " +
+           "join fetch a.section " +
+           "join fetch a.author " +
+           "where t.id= ?1 ",
+            countQuery = "select COUNT(a) from Article a join a.tags t where t.id= :id")
+    List<Article> findAllArticlesByTagId(Long id);
 }

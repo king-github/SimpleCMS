@@ -72,4 +72,21 @@ public class OrderModesBean {
         return new OrderModeHelper(list, NONE);
     }
 
+    @Bean(name="tagPanelOrderModeHelper")
+    public OrderModeHelper tagPanelOrderModeHelper() {
+
+        ArrayList<OrderMode> list = new ArrayList<>();
+
+        final OrderMode NONE = new OrderMode("NONE", "none", "", false);
+        list.add(NONE);
+
+        list.add(new OrderMode("NAME", "by name - ascending", "&sort=t.name,ASC", false));
+        list.add(new OrderMode("NAME_DESC", "by name - descending", "&sort=t.name,DESC", true));
+        list.add(new OrderMode("QUANTITY", "by number of related articles - ascending", "&sort=quantity,ASC", false));
+        list.add(new OrderMode("QUANTITY_DESC", "by number of related articles - descending", "&sort=quantity,DESC", true));
+        list.add(new OrderMode("ID", "by id - ascending", "&sort=t.id,ASC", false));
+        list.add(new OrderMode("ID_DESC", "by id - descending", "&sort=t.id,DESC", true));
+
+        return new OrderModeHelper(list, NONE);
+    }
 }

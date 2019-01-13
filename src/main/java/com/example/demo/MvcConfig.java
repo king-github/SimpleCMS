@@ -13,8 +13,6 @@ public class MvcConfig implements WebMvcConfigurer {
         registry
                 .addResourceHandler("/public/**")
                 .addResourceLocations("classpath:/static/");
-
-        System.out.println("hello "+registry);
     }
 
 

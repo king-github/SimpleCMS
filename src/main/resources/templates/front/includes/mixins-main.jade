@@ -15,7 +15,7 @@ mixin articleContent(article)
  section
   .tags
      for tag in article.tags
-       span #{tag.name}
+       a(href="/tag/"+tag.id) #{tag.name}
   h1 #{article.title}
   span.author #{article.author.firstname + ' ' + article.author.lastname }
   span.publicationTime #{article.publicationDate.format(dtFormatter)}
