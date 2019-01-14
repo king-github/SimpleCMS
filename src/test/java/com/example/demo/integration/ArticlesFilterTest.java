@@ -3,6 +3,7 @@ package com.example.demo.integration;
 import com.example.demo.entity.Article;
 import com.example.demo.entity.Author;
 import com.example.demo.entity.Section;
+import com.example.demo.entity.User;
 import com.example.demo.form.panel.ArticleSearchForm;
 import com.example.demo.repository.ArticleRepository;
 import org.junit.Before;
@@ -56,9 +57,12 @@ public class ArticlesFilterTest {
 		lifestyle = new Section("Lifestyle");
 		games = new Section("Games");
 
-		alan = new Author("Alan", "Alfa");
-		ben = new Author("Ben", "Bond");
-		bill = new Author("Bill", "Bond");
+		alan = new Author("user1", "user1@mail.com", User.UserStatus.ACTIVE,
+				"xxx", "Alan", "Alfa");
+		ben = new Author("user2", "user2@mail.com", User.UserStatus.ACTIVE,
+				"xxx","Ben", "Bond");
+		bill = new Author("user3", "user3@mail.com", User.UserStatus.ACTIVE,
+				"xxx","Bill", "Bond");
 
 		article1=new Article("Title 1", "Lead 1", "Content 1", alan);
 		article1.setSection(lifestyle);

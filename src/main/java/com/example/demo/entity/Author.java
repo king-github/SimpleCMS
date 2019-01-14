@@ -5,11 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Author {
+//@PrimaryKeyJoinColumn(name = "User")
+public class Author extends User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.AUTO)
+//    private Long id;
     private String firstname;
     private String lastname;
 
@@ -19,18 +20,33 @@ public class Author {
     public Author() {
     }
 
-    public Author(String firstname, String lastname) {
+    public Author(String username, String email, UserStatus status, String hashedPassword,
+                  String firstname, String lastname, List<Article> articles) {
+        super(username, email, status, hashedPassword);
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.articles = articles;
+    }
+
+    public Author(String username, String email, UserStatus status, String hashedPassword,
+                  String firstname, String lastname) {
+        super(username, email, status, hashedPassword);
         this.firstname = firstname;
         this.lastname = lastname;
     }
 
-    public Long getId() {
-        return id;
+        public Author(String firstname, String lastname) {
+        this.firstname = firstname;
+        this.lastname = lastname;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+//    public Long getId() {
+//        return id;
+//    }
+//
+//    public void setId(Long id) {
+//        this.id = id;
+//    }
 
     public String getFirstname() {
         return firstname;
