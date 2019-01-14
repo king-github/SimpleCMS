@@ -89,4 +89,22 @@ public class OrderModesBean {
 
         return new OrderModeHelper(list, NONE);
     }
+
+    @Bean(name="userPanelOrderModeHelper")
+    public OrderModeHelper userPanelOrderModeHelper() {
+
+        ArrayList<OrderMode> list = new ArrayList<>();
+
+        final OrderMode NONE = new OrderMode("NONE", "none", "", false);
+        list.add(NONE);
+
+        list.add(new OrderMode("USERNAME", "by username - ascending", "&sort=username,ASC", false));
+        list.add(new OrderMode("USERNAME_DESC", "by username - descending", "&sort=username,DESC", true));
+        list.add(new OrderMode("EMAIL", "by email - ascending", "&sort=email,ASC", false));
+        list.add(new OrderMode("EMAIL_DESC", "by email - descending", "&sort=email,DESC", true));
+        list.add(new OrderMode("ID", "by id - ascending", "&sort=id,ASC", false));
+        list.add(new OrderMode("ID_DESC", "by id - descending", "&sort=id,DESC", true));
+
+        return new OrderModeHelper(list, NONE);
+    }
 }
