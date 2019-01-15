@@ -7,64 +7,34 @@ block prepend content-header
 
 block content
 
-    form(method="post" action="/panel/user/edit" autocomplete="off")
-      table.table.table-striped.table-hover
-        tr
-          th #
-          th id
-          th username
-          th email
-          th roles
-          th: i.fas.fa-edit
+  table.table.table-striped.table-hover
+    tr
+      th #
+      th id
+      th username
+      th email
+      th roles
+      th: i.fas.fa-edit
 
-        for user, i in users
-          tr(id="id"+user.id)
-            td= i+1
-            td= user.id
-            td= user.username
-            td= user.email
-            td
-            td: a(href="#" role="button" class="editButton"): i.far.fa-edit
+    for user, i in users
+      tr(id="id"+user.id)
+        td= i+1
+        td= user.id
+        td= user.username
+        td= user.email
+        td
+          for role in user.roles
+            strong  #{role.label}
+            | (
+            - var prefix = ''
+            for p in role.privileges
+               span= prefix + p.label
+               - var prefix=', '
+            | )
+        td: a(href="/panel/user/edit/"+user.id role="button" class="editButton"): i.far.fa-edit
 
-
-        //- tr#editFormRow
-          td
-          td
-          td
-            input(type="text" class=form.getValidCss("name", "form-control", "form-control is-invalid")
-                  id="inputEditTagName" placeholder="Name" name="name" value=form.getValueFor("name"))
-            .invalid-feedback
-                       for err in form.getErrorsFor("name")
-                         span=err
-            input(type="hidden" name="id" value=form.getValueFor("id"))
-          td 0
-          td(colspan=2)
-            button.btn.btn-sm.btn-block.btn-secondary(type='submit')#saveTagBtn Save tag
-          td
-            button.btn.btn-sm.btn-block.btn-secondary(type='button')#cancelBtn.invisible: i.far.fa-window-close
-
-
-    #deleteWarningModal.modal.fade(tabindex='-1', role='dialog')
-      .modal-dialog.modal-dialog-centered(role='document')
-        .modal-content
-          .modal-header
-            h5.modal-title Delete tag
-            button.close(type='button', data-dismiss='modal', aria-label='Close')
-              span(aria-hidden='true') &times;
-          .modal-body
-            p
-              | Are you sure you want to delete tag:
-              strong#deleteRow
-              | ?
-          .modal-footer
-            button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
-            form(method="post" action="/panel/tag/delete")
-              button.btn.btn-danger(type='submit') Delete
-              input(type="hidden" name="tagId" value="")#deleteRowId
-
-
-    .btn-toolbar
-          +pageSizeBox(users, ' users per page')
-          +sortBox(users.sort, '/panel/user')
-          .btn-group.mr-2
-            +pagerBox(users)
+  .btn-toolbar
+    +pageSizeBox(users, ' users per page')
+    +sortBox(users.sort, '/panel/user')
+    .btn-group.mr-2
+      +pagerBox(users)

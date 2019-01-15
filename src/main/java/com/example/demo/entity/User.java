@@ -1,7 +1,15 @@
 package com.example.demo.entity;
 
 import javax.persistence.*;
-import java.util.Objects;
+import java.util.*;
+
+@NamedEntityGraphs({
+        @NamedEntityGraph(name = "User.allFetch",
+                attributeNodes = @NamedAttributeNode(value = "roles", subgraph = "roles.privileges"),
+                subgraphs = @NamedSubgraph(name = "roles.privileges",
+                        attributeNodes = @NamedAttributeNode( value = "privileges")))
+})
+
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -23,6 +31,16 @@ public class User {
     private UserStatus status = UserStatus.UNDEFINED;
 
     private String hashedPassword;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_role",
+            joinColumns = @JoinColumn(
+                    name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(
+                    name = "role_id", referencedColumnName = "id"))
+    private Set<Role> roles = new HashSet<>();
+
 
 
     public User() {
@@ -81,6 +99,30 @@ public class User {
 
     public void setHashedPassword(String hashedPassword) {
         this.hashedPassword = hashedPassword;
+    }
+
+    public Collection<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public void addRoles(Role... rolesCollection) {
+
+        for(Role role : rolesCollection) {
+            roles.add(role);
+            role.getUsers().add(this);
+        }
+    }
+
+    public void removeRoles(Role... rolesCollection) {
+
+        for(Role role : rolesCollection) {
+            roles.remove(role);
+            role.getUsers().remove(this);
+        }
     }
 
     @Override
