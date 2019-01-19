@@ -169,7 +169,6 @@ public class PersistArticleTest {
     public void givenNoIdArticleThenShowNewArticleForm () {
 
         ArticleForm articleForm = new ArticleForm();
-        Article article1 = new Article();
 
         when(articleFormArticleConverterMock.toArticleForm(any(Article.class))).thenReturn(articleForm);
 

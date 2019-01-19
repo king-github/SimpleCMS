@@ -13,6 +13,7 @@ block content
       th id
       th username
       th email
+      th status
       th roles
       th: i.fas.fa-edit
 
@@ -22,6 +23,7 @@ block content
         td= user.id
         td= user.username
         td= user.email
+        td= user.status
         td
           for role in user.roles
             strong  #{role.label}

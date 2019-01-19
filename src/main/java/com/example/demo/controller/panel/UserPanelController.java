@@ -1,10 +1,15 @@
 package com.example.demo.controller.panel;
 
 
-import com.example.demo.helper.OrderModeHelper;
-import com.example.demo.helper.PageSizeHelper;
-import com.example.demo.helper.PagerParamsHelper;
+import com.example.demo.controller.front.ArticleController;
+import com.example.demo.entity.User;
+import com.example.demo.error.NotFoundException;
+import com.example.demo.form.panel.UserForm;
+import com.example.demo.form.panel.UserFormUserConverter;
+import com.example.demo.helper.*;
 import com.example.demo.services.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.PageRequest;
@@ -13,15 +18,18 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("panel/user")
 @SessionAttributes("pager")
 public class UserPanelController {
+
+    private static final Logger logger = LoggerFactory.getLogger(ArticleController.class);
 
     private static final int USERS_PER_PAGE = 10;
 
@@ -38,6 +46,12 @@ public class UserPanelController {
     @ModelAttribute("pager")
     private PageRequest setUpPageRequest() { return  PageRequest.of(0, USERS_PER_PAGE, Sort.by("username")); }
 
+    @Autowired
+    private FormHelperFactory formHelperFactory;
+
+    @Autowired
+    private UserFormUserConverter userFormUserConverter;
+
 
     @GetMapping(value = "")
     public String index (Model model,
@@ -48,65 +62,73 @@ public class UserPanelController {
 
         pager = PageRequest.of(currentPager.getPageNumber(), currentPager.getPageSize(), currentPager.getSort());
         model.addAttribute("pager", pager);
-
         model.addAttribute("users", userService.getAllUsers(pager));
-
         model.addAttribute("sortModeHelper", sortModeHelper);
         model.addAttribute("pagerParamsHelper", PagerParamsHelper.of(pager));
         model.addAttribute("pageSizeHelper", pageSizeHelper);
         model.addAttribute("title", "User list");
 
-//        model.addAttribute("form", formHelperFactory
-//                .makeErrorFormHelper(tagFormTagConverter.toMap(new TagForm())));
-
         return "panel/user/index";
     }
 
+    @GetMapping("edit/{id}")
+    public String edit(Model model,
+                       @PathVariable Long id
+    ) {
 
-//    @PostMapping("delete")
-//    public String delete(Long tagId,
-//                         RedirectAttributes redirectAttributes,
-//                         @ModelAttribute(value = "sort", binding = false) Sort sort
-//                        ) {
-//
-//        Optional<TagWithQuantityDto> deleted = tagService.deleteTagById(tagId);
-//
-//        if (deleted.isPresent()) {
-//            redirectAttributes.addFlashAttribute("alertInfo",
-//                    String.format("Tag %s has been deleted and %d related articles have been updated.",
-//                            deleted.get().getName(), deleted.get().getQuantity()));
-//        } else {
-//            redirectAttributes.addFlashAttribute("alertDanger",
-//                    "Tag no exist.");
-//        }
-//
-//        return "redirect:/panel/tag?" +PagerParamsHelper.of(sort).build();
-//    }
-//
-//    @PostMapping("edit")
-//    public String edit(Model model,
-//                       @Valid TagForm tagForm,
-//                       BindingResult bindingResult,
-//                       RedirectAttributes redirectAttributes,
-//                       @ModelAttribute(value = "sort", binding = false) Sort sort
-//                       ) {
-//
-//        if (bindingResult.hasErrors()) {
-//            model.addAttribute("tags", tagService.getAllTagsWithQuantity(
-//                    PageRequest.of(0, Integer.MAX_VALUE, sort)));
-//            model.addAttribute("form", formHelperFactory.makeErrorFormHelper(bindingResult));
-//            model.addAttribute("alertDanger", "Tag has not been saved! Form has some errors.");
-//
-//            model.addAttribute("sortModeHelper", sortModeHelper);
-//            model.addAttribute("pagerParamsHelper", PagerParamsHelper.of(sort));
-//            return "panel/tag/index";
-//        }
-//
-//        Tag result = tagService.save(tagFormTagConverter.toTag(tagForm));
-//        redirectAttributes.addFlashAttribute("alertInfo",
-//                    String.format("Tag %s has been saved.", tagForm.getName()));
-//
-//        return "redirect:/panel/tag?" +PagerParamsHelper.of(sort).build();
-//    }
+        logger.info("Edit user with id: {}", id);
+
+        User user = userService.findUserById(id).orElseThrow(() -> new NotFoundException("User not found."));
+        UserForm userForm = userFormUserConverter.toUserForm(user);
+
+        model.addAttribute("statuses", User.UserStatus.getAllStatuses());
+        model.addAttribute("form", formHelperFactory.makeErrorFormHelper(userFormUserConverter.toMap(userForm)));
+        model.addAttribute("roles", userService.getAllRoles());
+        model.addAttribute("title", "User edit form");
+
+        return "panel/user/edit";
+    }
+
+    @PostMapping("edit/{id}")
+    public String save(Model model,
+                       @PathVariable Long id,
+                       @Valid UserForm userForm,
+                       BindingResult bindingResult,
+                       RedirectAttributes redirectAttributes,
+                       @ModelAttribute(value = "pager", binding = false) PageRequest pager
+    ) {
+
+        logger.info("Save user with id: {}", id);
+
+        FormHelper formHelper;
+        if (bindingResult.hasErrors()) {
+
+            formHelper = formHelperFactory.makeErrorFormHelper(bindingResult);
+            model.addAttribute("alertDanger","User has not been saved! Form has some errors.");
+        } else {
+
+            User user = userService.findUserById(id).orElseThrow(() -> new NotFoundException("User not found."));
+            formHelper = formHelperFactory.makeErrorFormHelper(userFormUserConverter.toMap(userForm));
+            user = userFormUserConverter.toUser(userForm, user);
+            userService.save(user);
+
+            String userHasBeenSavedMsg = String.format("User %s has been saved.", user.getUsername());
+
+            if (userForm.getSubmit().equals("back")) {
+
+                redirectAttributes.addFlashAttribute("alertInfo", userHasBeenSavedMsg);
+                return "redirect:/panel/user?"+PagerParamsHelper.of(pager).build();
+            }
+
+            model.addAttribute("alertInfo", userHasBeenSavedMsg);
+        }
+
+        model.addAttribute("form", formHelper);
+        model.addAttribute("statuses", User.UserStatus.getAllStatuses());
+        model.addAttribute("roles", userService.getAllRoles());
+        model.addAttribute("title", "User edit form");
+
+        return "panel/user/edit";
+    }
 
 }

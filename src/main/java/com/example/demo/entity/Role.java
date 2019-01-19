@@ -1,9 +1,12 @@
 package com.example.demo.entity;
 
-
-
 import javax.persistence.*;
 import java.util.*;
+
+@NamedEntityGraphs({
+        @NamedEntityGraph(name = "Role.fetchAll",
+                attributeNodes = @NamedAttributeNode( value = "privileges"))
+})
 
 @Entity
 public class Role {

@@ -10,71 +10,52 @@ block content
   form(method="post" autocomplete="off")
 
      .form-group.row
-      .mb-2.col-md-8
-        label(for="inputTitle") Title:
-        input(type="text" class=form.getValidCss("title", "form-control", "form-control is-invalid") id="inputTitle"
-              placeholder="Title" name="title" value=form.getValueFor("title"))
+      .mb-2.col-md-6
+        label(for="inputUsername") Username:
+        input(type="text" class=form.getValidCss("username", "form-control", "form-control is-invalid") id="inputUsername"
+              placeholder="Username" name="username" value=form.getValueFor("username"))
         .invalid-feedback
-           for err in form.getErrorsFor("title")
-             span=err
+           for err in form.getErrorsFor("username")
+             div Username #{err}
 
-      .mb-2.col-lg-4
-        label(for="inputSection") Section:
-        select(id="inputSection" name="sectionId").form-control
-          for section in sections
-             if section.id == form.getValueFor("sectionId")
-                option(value=section.id selected)= section.name
-             else
-                option(value=section.id)= section.name
+     .form-group.row
+           .mb-2.col-md-6
+             label(for="inputEmail") Email:
+             input(type="text" class=form.getValidCss("email", "form-control", "form-control is-invalid") id="inputEmail"
+                   placeholder="Email" name="email" value=form.getValueFor("email"))
+             .invalid-feedback
+                for err in form.getErrorsFor("email")
+                  div Email #{err}
+
+     .form-group.row
+       .mb-2.col-md-4
+          label(for="inputStatus") Section:
+          select(id="inputStatus" name="status").form-control
+            for status in statuses
+               if status == form.getValueFor("status")
+                  option(value=status selected)= status
+               else
+                  option(value=status)= status
 
      .form-group.row
       .mb-2.col-md-12
-        label Tags:
-      .mb-2.col-md-12
-         for tag, i in tagHelper.getTagItems(form.getValueFor("tagIds"))
+        label Roles:
+      for role, i in roles
+       .mb-2.col-md-12
            .form-check.form-check-inline
-              input(type="checkbox" class="form-check-input" name="tagIds" id="inlineCheckbox"+i
-                    checked=tag.checked value=tag.id aria-label="select "+tag.name)
-              label(class="form-check-label" for="inlineCheckbox"+i)= tag.name
-
-
-     .form-group.row
-      .mb-2.col-md-12
-        label(for="inputLead") Lead:
-        textarea(class=form.getValidCss("lead", "form-control", "form-control is-invalid") id="inputLead" rows="5"
-              placeholder="Lead text" name="lead")=form.getValueFor("lead")
-        .invalid-feedback
-           for err in form.getErrorsFor("lead")
-             span=err
+              input(type="checkbox" class="form-check-input" name="roleIds" id="inlineCheckbox"+i
+                    value=role.id checked=form.getValueFor("roleIds").contains(role.id))
+              label(class="form-check-label" for="inlineCheckbox"+i)
+                  strong= role.label
+                  |  (
+                  - var prefix=''
+                  for privilege in role.privileges
+                    span= prefix+ privilege.label
+                    - var prefix=', '
+                  | )
 
      .form-group.row
-      .mb-2.col-md-12
-        label(for="inputContent") Content:
-        textarea(class=form.getValidCss("content", "form-control", "form-control is-invalid") id="inputContent" rows="10"
-              placeholder="Content text" name="content")=form.getValueFor("content")
-        .invalid-feedback
-           for err in form.getErrorsFor("content")
-             span=err
-     .form-group.row
-      .mb-2.col-md-2
-        .form-check.form-check-inline
-          input(type="checkbox" class="form-check-input" name="published" id="publishedCheckbox"
-                          checked=form.getValueFor("published")==true value="true" aria-label="published")
-          label(class="form-check-label" for="publishedCheckbox") published
-      .mb-2.offset-8.col-md-2
-         button(type="submit" id="saveSubmit").btn.btn-secondary.btn-block Save article
-
-
-
-  .row
-     .mb-2.col-md-2 Author:
-     .mb-2.col-md-2= article.author.firstname +" " +article.author.lastname
-  .row
-     .mb-2.col-md-2 Publication date:
-     .mb-2.col-md-4= article.publicationDate ? article.publicationDate.format(dtFormatter) : "never published"
-  .row
-     .mb-2.col-md-2 Created:
-     .mb-2.col-md-4= article.createDateTime ? article.createDateTime.format(dtFormatter) : "not saved yet"
-  .row
-     .mb-2.col-md-2 Last upadated:
-     .mb-2.col-md-4= article.updateDateTime ? article.updateDateTime.format(dtFormatter) : "not saved yet"
+       .mb-2.col-md-4
+              button(type="submit" name="submit" value="back" id="saveAndBackSubmit").btn.btn-secondary.btn-block Save user and back
+       .mb-2.offset-md-4.col-md-4
+              button(type="submit" name="submit" value="stay" id="saveSubmit").btn.btn-secondary.btn-block Save user

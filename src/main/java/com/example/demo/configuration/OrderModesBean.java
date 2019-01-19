@@ -102,6 +102,8 @@ public class OrderModesBean {
         list.add(new OrderMode("USERNAME_DESC", "by username - descending", "&sort=username,DESC", true));
         list.add(new OrderMode("EMAIL", "by email - ascending", "&sort=email,ASC", false));
         list.add(new OrderMode("EMAIL_DESC", "by email - descending", "&sort=email,DESC", true));
+        list.add(new OrderMode("STATUS", "by status - ascending", "&sort=status,ASC", false));
+        list.add(new OrderMode("STATUS_DESC", "by status - descending", "&sort=status,DESC", true));
         list.add(new OrderMode("ID", "by id - ascending", "&sort=id,ASC", false));
         list.add(new OrderMode("ID_DESC", "by id - descending", "&sort=id,DESC", true));
 

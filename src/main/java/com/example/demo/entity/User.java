@@ -1,10 +1,12 @@
 package com.example.demo.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Size;
 import java.util.*;
 
 @NamedEntityGraphs({
-        @NamedEntityGraph(name = "User.allFetch",
+        @NamedEntityGraph(name = "User.fetchAll",
                 attributeNodes = @NamedAttributeNode(value = "roles", subgraph = "roles.privileges"),
                 subgraphs = @NamedSubgraph(name = "roles.privileges",
                         attributeNodes = @NamedAttributeNode( value = "privileges")))
@@ -15,15 +17,23 @@ import java.util.*;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class User {
 
-    public enum UserStatus { UNDEFINED, NEW, ACTIVE, INACTIVE }
+    public enum UserStatus {
+        UNDEFINED, NEW, ACTIVE, INACTIVE;
+
+        public static List<UserStatus> getAllStatuses() {
+            return Arrays.asList(UserStatus.values());
+        }
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
 
+    @Size(min=4, max=32)
     @Column(unique=true, nullable=false)
     private String username;
 
+    @Email
     @Column(unique=true, nullable=false)
     private String email;
 
@@ -109,7 +119,7 @@ public class User {
         this.roles = roles;
     }
 
-    public void addRoles(Role... rolesCollection) {
+    public void addRoles(Collection<Role> rolesCollection) {
 
         for(Role role : rolesCollection) {
             roles.add(role);
@@ -117,11 +127,14 @@ public class User {
         }
     }
 
-    public void removeRoles(Role... rolesCollection) {
+    public void removeRoles(Collection<Role> rolesCollection) {
 
-        for(Role role : rolesCollection) {
-            roles.remove(role);
+        Iterator<Role> iterator = rolesCollection.iterator();
+        while( iterator.hasNext()) {
+
+            Role role = iterator.next();
             role.getUsers().remove(this);
+            iterator.remove();
         }
     }
 

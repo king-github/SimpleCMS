@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import javax.transaction.Transactional;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -82,9 +83,9 @@ public class FixturesDev {
         User user2 = new User("user2", "user2@mail.com", User.UserStatus.NEW, "xxx");
         User user3 = new User("user3", "user3@mail.com", User.UserStatus.INACTIVE, "xxx");
 
-        user1.addRoles(articleEditor, tagEditor, sectionEditor);
-        user2.addRoles(articleEditor, tagEditor);
-        user3.addRoles(articleEditor);
+        user1.addRoles(Arrays.asList(articleEditor, tagEditor, sectionEditor));
+        user2.addRoles(Arrays.asList(articleEditor, tagEditor));
+        user3.addRoles(Arrays.asList(articleEditor));
 
         List<User> users = Arrays.asList(user1, user2, user3);
         userRepository.saveAll(users);
