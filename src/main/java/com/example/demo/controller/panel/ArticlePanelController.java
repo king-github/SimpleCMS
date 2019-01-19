@@ -86,7 +86,8 @@ public class ArticlePanelController {
                               @PageableDefault(size = ARTICLES_PER_PAGE) Pageable pageable,
                               @Valid ArticleSearchForm articleSearchForm,
                               BindingResult bindingResult,
-                              @ModelAttribute(value = "articleSearchCriteria", binding = false) ArticleSearchForm articleSearchCriteria
+                              @ModelAttribute(value = "articleSearchCriteria", binding = false)
+                                                                            ArticleSearchForm articleSearchCriteria
                              ){
 
         logger.info("Articles - receive ArticleSearchForm");
@@ -128,7 +129,8 @@ public class ArticlePanelController {
         Article article = id.isPresent() ? articleService.findArticle(id.get()) : new Article();
         ArticleForm articleForm = articleFormArticleConverter.toArticleForm(article);
 
-        model.addAttribute("form", formHelperFactory.makeErrorFormHelper(articleFormArticleConverter.toMap(articleForm)));
+        model.addAttribute("form", formHelperFactory.makeErrorFormHelper(
+                                                                articleFormArticleConverter.toMap(articleForm)));
         model.addAttribute("article", article);
         model.addAttribute("tagHelper", tagHelperFactory.make());
         model.addAttribute("title", "Edit article: ");
@@ -151,9 +153,12 @@ public class ArticlePanelController {
 
             String info = ((id.isPresent()) ? "Article has been saved " : "New article has been added ")
                         + ((article.isPublished()) ? "and is published." : " but is not published.");
-            redirectAttributes.addFlashAttribute("alertInfo", info);
 
-            return "redirect:/panel/article/edit/"+article.getId();
+            if (articleForm.getSubmit().equals("back")) {
+                redirectAttributes.addFlashAttribute("alertInfo", info);
+                return "redirect:/panel/article/";
+            }
+            model.addAttribute("alertInfo", info);
         } else {
             model.addAttribute("alertDanger", "Article has not been saved! Form has some errors.");
         }

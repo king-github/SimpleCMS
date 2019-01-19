@@ -61,9 +61,10 @@ block content
           input(type="checkbox" class="form-check-input" name="published" id="publishedCheckbox"
                           checked=form.getValueFor("published")==true value="true" aria-label="published")
           label(class="form-check-label" for="publishedCheckbox") published
-      .mb-2.offset-8.col-md-2
-         button(type="submit" id="saveSubmit").btn.btn-secondary.btn-block Save article
-
+      .mb-2.offset-3.col-md-3
+         button(type="submit" name="submit" value="back" id="saveAndBackSubmit").btn.btn-secondary.btn-block Save article and back
+      .mb-2.offset-2.col-md-2
+         button(type="submit" name="submit" value="stay" id="saveSubmit").btn.btn-secondary.btn-block Save article
 
 
   .row

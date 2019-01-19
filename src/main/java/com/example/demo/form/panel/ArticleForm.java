@@ -20,6 +20,8 @@ public class ArticleForm {
 
     private Set<Long> tagIds = new HashSet<>();
 
+    private String submit = "";
+
 
     public ArticleForm(Long id, String author, String title, String lead, String content, boolean published,
                        Long sectionId, Set<Long> tagIds,
@@ -92,5 +94,13 @@ public class ArticleForm {
 
     public void setTagIds(Set<Long> tagIds) {
         this.tagIds = tagIds;
+    }
+
+    public String getSubmit() {
+        return submit;
+    }
+
+    public void setSubmit(String submit) {
+        this.submit = submit;
     }
 }
