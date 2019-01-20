@@ -7,13 +7,15 @@ block prepend content-header
 
 block content
 
+    - var sortMode = sortModeHelper.findModeByParamString(pagerParamsHelper.getSortParamsString(sort))
+
     form(method="post" action="/panel/tag/edit" autocomplete="off")
       table.table.table-striped.table-hover
         tr
           th #
-          th id
-          th name
-          th(colspan=2) related articles
+          th: +sortIndicator('ID', sortMode) id
+          th: +sortIndicator('NAME', sortMode) name
+          th(colspan=2): +sortIndicator('QUANTITY', sortMode) related articles
           th: i.fas.fa-trash-alt
           th: i.fas.fa-edit
 

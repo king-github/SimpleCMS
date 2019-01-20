@@ -7,13 +7,15 @@ block prepend content-header
 
 block content
 
+  - var sortMode = sortModeHelper.findModeByParamString(pagerParamsHelper.getSortParamsString(users.getPageable()))
+
   table.table.table-striped.table-hover
     tr
       th #
-      th id
-      th username
-      th email
-      th status
+      th: +sortIndicator('ID', sortMode) id
+      th: +sortIndicator('USERNAME', sortMode) username
+      th: +sortIndicator('EMAIL', sortMode) email
+      th: +sortIndicator('STATUS', sortMode) status
       th roles
       th: i.fas.fa-edit
 
@@ -27,12 +29,6 @@ block content
         td
           for role in user.roles
             strong  #{role.label}
-            | (
-            - var prefix = ''
-            for p in role.privileges
-               span= prefix + p.label
-               - var prefix=', '
-            | )
         td: a(href="/panel/user/edit/"+user.id role="button" class="editButton"): i.far.fa-edit
 
   .btn-toolbar

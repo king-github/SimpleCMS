@@ -9,6 +9,8 @@ import com.example.demo.helper.FormHelperFactory;
 import com.example.demo.helper.OrderModeHelper;
 import com.example.demo.helper.PagerParamsHelper;
 import com.example.demo.services.TagService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +28,8 @@ import java.util.Optional;
 @RequestMapping("panel/tag")
 @SessionAttributes("sort")
 public class TagPanelController {
+
+    private static final Logger logger = LoggerFactory.getLogger(TagPanelController.class);
 
     @Autowired
     private TagService tagService;
@@ -63,6 +67,9 @@ public class TagPanelController {
         model.addAttribute("form", formHelperFactory
                 .makeErrorFormHelper(tagFormTagConverter.toMap(new TagForm())));
 
+        model.addAttribute("title", "Tag list");
+
+        logger.info("Tag list");
         return "panel/tag/index";
     }
 
@@ -79,6 +86,7 @@ public class TagPanelController {
             redirectAttributes.addFlashAttribute("alertInfo",
                     String.format("Tag %s has been deleted and %d related articles have been updated.",
                             deleted.get().getName(), deleted.get().getQuantity()));
+            logger.info("Tag list - tag with id: {} has been deleted", tagId);
         } else {
             redirectAttributes.addFlashAttribute("alertDanger",
                     "Tag no exist.");
@@ -103,13 +111,17 @@ public class TagPanelController {
 
             model.addAttribute("sortModeHelper", sortModeHelper);
             model.addAttribute("pagerParamsHelper", PagerParamsHelper.of(sort));
+            model.addAttribute("title", "Tag list");
+
+            logger.info("Tag list - save tag with id: {} failed", tagForm.getId() );
             return "panel/tag/index";
         }
 
         Tag result = tagService.save(tagFormTagConverter.toTag(tagForm));
         redirectAttributes.addFlashAttribute("alertInfo",
-                    String.format("Tag %s has been saved.", tagForm.getName()));
+                    String.format("Tag %s has been saved.", result.getName()));
 
+        logger.info("Tag list - save tag with id: {}", result.getId() );
         return "redirect:/panel/tag?" +PagerParamsHelper.of(sort).build();
     }
 

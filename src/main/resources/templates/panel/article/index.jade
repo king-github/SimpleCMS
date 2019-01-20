@@ -2,15 +2,6 @@ extends ../panel-layout
 
 include ../includes/mixins-panel.jade
 
-mixin sortIndicator(sMode, mode)
-
-  if sMode == mode.id || sMode+'_DESC' == mode.id
-    if mode.isDesc()
-        i.fas.fa-sort-amount-down
-    else
-        i.fas.fa-sort-amount-up
-  block
-
 block prepend content-header
   h1= title
 

@@ -8,6 +8,8 @@ import com.example.demo.helper.FormHelperFactory;
 import com.example.demo.helper.OrderModeHelper;
 import com.example.demo.helper.PagerParamsHelper;
 import com.example.demo.services.SectionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Sort;
@@ -24,6 +26,8 @@ import java.util.Optional;
 @RequestMapping("panel/section")
 @SessionAttributes("sort")
 public class SectionPanelController {
+
+    private static final Logger logger = LoggerFactory.getLogger(SectionPanelController.class);
 
     @Autowired
     private SectionService sectionService;
@@ -58,6 +62,9 @@ public class SectionPanelController {
         model.addAttribute("form", formHelperFactory
                 .makeErrorFormHelper(sectionFormSectionConverter.toMap(new SectionForm())));
 
+        model.addAttribute("title", "Section list");
+
+        logger.info("Section list");
         return "panel/section/index";
     }
 
@@ -73,6 +80,8 @@ public class SectionPanelController {
         if (deleted.isPresent()) {
             redirectAttributes.addFlashAttribute("alertInfo",
                     String.format("Section %s has been deleted.", deleted.get().getName()));
+
+            logger.info("Section list -section with id: {} has been deleted", deleted.get().getId() );
         } else {
             redirectAttributes.addFlashAttribute("alertDanger",
                     "Section no exist or has related with some articles.");
@@ -96,13 +105,17 @@ public class SectionPanelController {
 
             model.addAttribute("sortModeHelper", sortModeHelper);
             model.addAttribute("pagerParamsHelper", PagerParamsHelper.of(sort));
+            model.addAttribute("title", "Section list");
+
+            logger.info("Section list - save section with id: {} failed", sectionForm.getId() );
             return "panel/section/index";
         }
 
         Section result = sectionService.save(sectionFormSectionConverter.toSection(sectionForm));
         redirectAttributes.addFlashAttribute("alertInfo",
-                    String.format("Section %s has been saved.", sectionForm.getName()));
+                    String.format("Section %s has been saved.", result.getName()));
 
+        logger.info("Section list - save section with id: {}", result.getId() );
         return "redirect:/panel/section?" +PagerParamsHelper.of(sort).build();
     }
 

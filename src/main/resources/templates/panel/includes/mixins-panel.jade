@@ -57,3 +57,12 @@ mixin pagerBox(pageable)
       a(href='?' +pagerParamsHelper.withPage(pageable.totalPages-1).build()).btn.btn-secondary &raquo;
     else
       span.btn.btn-secondary.disabled &raquo;
+
+mixin sortIndicator(sMode, mode)
+
+  if sMode == mode.id || sMode+'_DESC' == mode.id
+    if mode.isDesc()
+        i.fas.fa-sort-amount-down
+    else
+        i.fas.fa-sort-amount-up
+  block
