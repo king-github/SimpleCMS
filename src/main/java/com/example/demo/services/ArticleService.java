@@ -6,6 +6,8 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Optional;
+
 public interface ArticleService {
     Page<Article> getAllArticles(Pageable pageable);
 
@@ -28,6 +30,8 @@ public interface ArticleService {
     void addArticle(Article article);
 
     Article findArticle(Long id);
+
+    Optional<Article> findArticleById(Long id);
 
     int deleteArticles(Iterable<Long> ids);
 

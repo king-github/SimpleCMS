@@ -6,9 +6,9 @@ import com.example.demo.form.panel.ArticleFormArticleConverter;
 import com.example.demo.form.panel.ArticleSearchForm;
 import com.example.demo.helper.FormHelper;
 import com.example.demo.helper.FormHelperFactory;
-import com.example.demo.helper.TagHelperFactory;
 import com.example.demo.services.ArticleService;
 import com.example.demo.services.SectionService;
+import com.example.demo.services.TagService;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -40,6 +41,8 @@ public class ArticlePanelControllerTest {
     @Mock
     private ArticleService articleServiceMock;
     @Mock
+    private TagService tagServiceMock;
+    @Mock
     private ArticleFormArticleConverter articleFormArticleConverterMock;
     @Mock
     private Model model;
@@ -54,9 +57,7 @@ public class ArticlePanelControllerTest {
     @Mock
     private SectionService sectionService;
     @Mock
-    private TagHelperFactory tagHelperFactory;
-    @Mock
-    private Pageable pageable;
+    private PageRequest pagerMock;
     @Mock
     private Page<Article> pageMock;
 
@@ -69,22 +70,22 @@ public class ArticlePanelControllerTest {
         ReflectionTestUtils.setField(articlePanelController, "articleFormArticleConverter",
                                                                             articleFormArticleConverterMock);
         ReflectionTestUtils.setField(articlePanelController, "formHelperFactory", formHelperFactory);
-
+        ReflectionTestUtils.setField(articlePanelController, "tagService", tagServiceMock);
         ReflectionTestUtils.setField(articlePanelController, "sectionService", sectionService);
-        ReflectionTestUtils.setField(articlePanelController, "tagHelperFactory", tagHelperFactory);
     }
 
     @Test
     public void givenParams_whenIndex_thenReceiveListOfArticles () {
 
         ArticleSearchForm articleSearchCriteria = new ArticleSearchForm();
+        Pageable pageable1 = PageRequest.of(0,10, null);
 
-        when(articleServiceMock.getAllArticles(articleSearchCriteria, pageable)).thenReturn(pageMock);
+        when(articleServiceMock.getAllArticles(articleSearchCriteria, pageable1)).thenReturn(pageMock);
         when(formHelperFactory.makeErrorFormHelper(anyMap())).thenReturn(formHelperMock);
 
-        String result = articlePanelController.index(model, pageable, articleSearchCriteria);
+        String result = articlePanelController.index(model, pageable1, articleSearchCriteria, pagerMock);
 
-        verify(articleServiceMock, times(1)).getAllArticles(articleSearchCriteria, pageable);
+        verify(articleServiceMock, times(1)).getAllArticles(articleSearchCriteria, pageable1);
         verify(model, times(1)).addAttribute(eq("articles"), eq(pageMock));
         verify(model, times(1)).addAttribute(eq("form"), eq(formHelperMock));
         verify(model, times(1)).addAttribute(eq("title"), anyString());
@@ -103,9 +104,9 @@ public class ArticlePanelControllerTest {
         when(bindingResult.hasErrors()).thenReturn(false);
 
         String result = articlePanelController
-                            .searchForm(model, pageable, articleSearchForm, bindingResult, articleSearchCriteria);
+                            .searchForm(model, pagerMock, articleSearchForm, bindingResult, articleSearchCriteria);
 
-        verify(articleServiceMock, times(1)).getAllArticles(articleSearchForm, pageable);
+        verify(articleServiceMock, times(1)).getAllArticles(eq(articleSearchForm), eq(pagerMock));
         verify(model).addAttribute(eq("articleSearchCriteria"), eq(articleSearchForm));
 
         assertEquals("panel/article/index", result);
@@ -122,9 +123,9 @@ public class ArticlePanelControllerTest {
         when(bindingResult.hasErrors()).thenReturn(true);
 
         String result = articlePanelController
-                            .searchForm(model, pageable, articleSearchForm, bindingResult, articleSearchCriteria);
+                            .searchForm(model, pagerMock, articleSearchForm, bindingResult, articleSearchCriteria);
 
-        verify(articleServiceMock, times(1)).getAllArticles(articleSearchCriteria, pageable);
+        verify(articleServiceMock, times(1)).getAllArticles(articleSearchCriteria, pagerMock);
 
         assertEquals("panel/article/index", result);
     }
@@ -134,7 +135,7 @@ public class ArticlePanelControllerTest {
 
         List<Long> ids = Arrays.asList(1L, 2L, 3L);
 
-        String result = articlePanelController.delete(model, pageable, Optional.of(ids), redirectAttributes);
+        String result = articlePanelController.delete(model, Optional.of(ids), pagerMock, redirectAttributes);
 
         verify(articleServiceMock, times(1)).deleteArticles(ids);
 
@@ -186,6 +187,8 @@ public class ArticlePanelControllerTest {
         Article article = new Article();
         article.setId(ARTICLE_ID);
 
+        PageRequest pager1 = PageRequest.of(23,17, null);
+
         when(articleServiceMock.findArticle(any())).thenReturn(article);
         when(articleServiceMock.save(any(Article.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(bindingResult.hasErrors()).thenReturn(false);
@@ -194,9 +197,9 @@ public class ArticlePanelControllerTest {
                                             .thenAnswer(invocation -> invocation.getArgument(1));
 
         String result = articlePanelController
-                            .save(model, Optional.of(12L), articleForm, bindingResult, redirectAttributes);
+                            .save(model, Optional.of(12L), articleForm, bindingResult, pager1, redirectAttributes);
 
-        assertEquals("redirect:/panel/article/", result);
+        assertEquals("redirect:/panel/article?page=23&size=17", result);
 
         verify(articleServiceMock, times(1)).save(article);
         verify(articleFormArticleConverterMock, times(1)).toArticle(articleForm, article);
@@ -222,7 +225,7 @@ public class ArticlePanelControllerTest {
                 .thenAnswer(invocation -> invocation.getArgument(1));
 
         String result = articlePanelController
-                .save(model, Optional.of(12L), articleForm, bindingResult, redirectAttributes);
+                .save(model, Optional.of(12L), articleForm, bindingResult, pagerMock, redirectAttributes);
 
         assertEquals("panel/article/edit", result);
 
@@ -241,16 +244,16 @@ public class ArticlePanelControllerTest {
         ArticleForm articleForm = new ArticleForm();
         articleForm.setSubmit("back");
         Article article1 = new Article();
-
+        PageRequest pager1 = PageRequest.of(23,17, null);
 
         when(articleServiceMock.save(any(Article.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(bindingResult.hasErrors()).thenReturn(false);
         when(articleFormArticleConverterMock.toArticle(eq(articleForm), any(Article.class))).thenReturn(article1);
 
         String result = articlePanelController
-                            .save(model, Optional.empty(), articleForm, bindingResult, redirectAttributes);
+                            .save(model, Optional.empty(), articleForm, bindingResult, pager1, redirectAttributes);
 
-        assertEquals("redirect:/panel/article/", result);
+        assertEquals("redirect:/panel/article?page=23&size=17", result);
 
         verify(articleServiceMock, times(1)).save(any(Article.class));
         verify(articleFormArticleConverterMock, times(1)).toArticle(any(), any());
@@ -271,7 +274,7 @@ public class ArticlePanelControllerTest {
         when(bindingResult.hasErrors()).thenReturn(true);
 
         String result = articlePanelController
-                                .save(model, Optional.empty(), articleForm, bindingResult, redirectAttributes);
+                            .save(model, Optional.empty(), articleForm, bindingResult, pagerMock, redirectAttributes);
 
         assertEquals("panel/article/edit", result);
 

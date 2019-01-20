@@ -31,10 +31,10 @@ block content
       .mb-2.col-md-12
         label Tags:
       .mb-2.col-md-12
-         for tag, i in tagHelper.getTagItems(form.getValueFor("tagIds"))
+         for tag, i in tags
            .form-check.form-check-inline
               input(type="checkbox" class="form-check-input" name="tagIds" id="inlineCheckbox"+i
-                    checked=tag.checked value=tag.id aria-label="select "+tag.name)
+                    checked=form.getValueFor("tagIds").contains(tag.id) value=tag.id aria-label="select "+tag.name)
               label(class="form-check-label" for="inlineCheckbox"+i)= tag.name
 
 

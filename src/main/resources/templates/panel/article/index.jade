@@ -20,7 +20,7 @@ block content
   - var offset = articles.getPageable().getOffset()
 
   .btn-toolbar
-    form(method="post" autocomplete="off")
+    form(method="post" autocomplete="off" action="/panel/article")
      .form-group.row
       .mb-2.col-lg-3
         label(for="inputTitle") Title:
@@ -103,8 +103,22 @@ block content
         th: i.far.fa-check-square
         th: i.far.fa-edit
 
+      if lastModifiedArticle
+        tr.table-info
+          td -
+          td= lastModifiedArticle.id
+          td= lastModifiedArticle.title
+          td= lastModifiedArticle.author.firstname +' '+ article.author.lastname
+          td= lastModifiedArticle.section.name
+          td= lastModifiedArticle.publicationDate ? lastModifiedArticle.publicationDate.format(dtFormatter) : "never published"
+          td= (lastModifiedArticle.published) ? "published" : "not published"
+          td: input(type="checkbox" name="ids" value=lastModifiedArticle.id aria-label="select "+lastModifiedArticle.title).deleteCheckbox
+          td: a(href="/panel/article/edit/"+lastModifiedArticle.id): i.far.fa-edit
+
+
       for article, i in articles
-        tr
+
+        tr(class=(article.id == lastModifiedId) ? "table-info" : "")
           td= i +offset +1
           td= article.id
           td= article.title

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Primary
@@ -78,8 +79,15 @@ public class ArticleServiceImpl implements ArticleService {
 
         return articleRepository.findById(id)
                                 .orElseThrow(() -> new NotFoundException("Article not found"));
-
     }
+
+    @Override
+    public Optional<Article> findArticleById(Long id) {
+
+        if (id == null) return Optional.empty();
+        return articleRepository.findById(id);
+    }
+
 
     @Transactional
     @Override
