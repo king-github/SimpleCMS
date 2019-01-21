@@ -107,10 +107,11 @@ public class ArticlesRepositoryTest {
 	}
 
 	@Test
-	public void giveAllIdsThenDeleteAllArticles () {
+	public void givenAllIds_whenDeleteArticles_thenDeleteAllArticles () {
 
 		int removedCount = articleService.deleteArticles(
 		        Arrays.asList(article1.getId(), article2.getId(), article3.getId()));
+
 		List<Article> results = repository.findAll();
 		List<Author> authors = authorRepository.findAll();
 		List<Section> sections = sectionRepository.findAll();
@@ -126,7 +127,7 @@ public class ArticlesRepositoryTest {
 	}
 
 	@Test
-	public void removeOnlyArticlesWithIds () {
+	public void givenIds_whenDeleteArticles_thenRemoveOnlyArticlesWithExistIds () {
 
         long removedCount = articleService.deleteArticles(Arrays.asList(article1.getId(), 90L, 91L, 92L));
 		List<Article> results = repository.findAll();
@@ -158,7 +159,7 @@ public class ArticlesRepositoryTest {
 	}
 
     @Test
-    public void givenTagId_whenFindAllArticlesByTagId_thenGetPublishedArticlesWithCorrectTagsSets(){
+    public void givenTagId_whenFindAllArticlesByTagId_thenGetOnlyPublishedArticlesWithCorrectTagsSets(){
 
         Page<Article> page = repository.findArticleByTagIdAndPublished(tag3.getId(),
                 PageRequest.of(0, 10));

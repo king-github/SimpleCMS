@@ -101,7 +101,7 @@ public class UserPanelControllerTest {
     }
 
     @Test
-    public void whenIndex_ThenShowPageOfUsers() {
+    public void givenPageRequest_whenIndex_thenReceivePageOfUsers() {
 
         paramPagerMock = PageRequest.of(2,12,Sort.by("id"));
 
@@ -114,7 +114,7 @@ public class UserPanelControllerTest {
     }
 
     @Test
-    public void givenCorrectId_whenEdit_ThenShowEditForm() {
+    public void givenCorrectId_whenEdit_thenReceiveEditForm() {
 
         Long id = 123L;
 
@@ -136,7 +136,7 @@ public class UserPanelControllerTest {
     }
 
     @Test(expected = NotFoundException.class)
-    public void givenNoExisedId_whenEdit_ThenThrowException() {
+    public void givenNoExistedId_whenEdit_thenThrowException() {
 
         Long id = 666L;
 
@@ -164,7 +164,7 @@ public class UserPanelControllerTest {
     }
 
     @Test
-    public void givenCorrectForm_whenSaveAndBack_thenSaveAndShowList() {
+    public void givenCorrectForm_whenSaveAndBack_thenSaveAndRedirect() {
 
         Long id = 123L;
 

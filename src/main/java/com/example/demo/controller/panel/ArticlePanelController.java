@@ -70,7 +70,7 @@ public class ArticlePanelController {
 
     @ModelAttribute("pager")
     public PageRequest setUpPageRequest() {
-        return PageRequest.of(0, ARTICLES_PER_PAGE, Sort.by(""));
+        return PageRequest.of(0, ARTICLES_PER_PAGE, Sort.unsorted());
     }
 
     @GetMapping()

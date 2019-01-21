@@ -96,10 +96,9 @@ public class ArticleFormArticleConverterTest {
     }
 
     @Test
-    public void givenArticleFormThenReceiveNewArticle() {
+    public void givenArticleForm_whenToNewArticle_thenReceiveNewArticle() {
 
         when(sectionRepository.findById(anyLong())).thenReturn(Optional.of(section1));
-
         when(tagRepository.findAllById(tagIds)).thenReturn(tags);
 
         Article result = articleFormArticleConverter.toNewArticle(articleFormBase);
@@ -121,7 +120,7 @@ public class ArticleFormArticleConverterTest {
     }
 
     @Test
-    public void givenArticleFormAndArticleBaseThenReceiveArticle() {
+    public void givenArticleFormAndArticleBase_whenToArticle_thenReceiveArticle() {
 
         when(sectionRepository.findById(anyLong())).thenReturn(Optional.of(section1));
 
@@ -146,7 +145,7 @@ public class ArticleFormArticleConverterTest {
     }
 
     @Test
-    public void givenArticleBaseAndReciveArticleForm() {
+    public void givenArticleBaseAnd_whenToArticleForm_thenReciveArticleForm() {
 
         ArticleForm articleForm = articleFormArticleConverter.toArticleForm(articleBase);
 

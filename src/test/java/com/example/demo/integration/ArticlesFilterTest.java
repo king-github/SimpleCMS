@@ -85,7 +85,7 @@ public class ArticlesFilterTest {
 	}
 
 	@Test
-	public void giveNoFilterThenReceiveAllArticles () {
+	public void givenNoFilter_whenFindAll_thenReceiveAllArticles () {
 
 		List<Article> results = repository.findAll();
 
@@ -96,7 +96,7 @@ public class ArticlesFilterTest {
 	}
 
 	@Test
-	public void giveTitleThenReceiveArticlesContainTitle () {
+	public void givenTitle_whenFindArticlesByCriteria_thenReceiveArticlesContainTitle () {
 
 		ArticleSearchForm articleSearchForm = new ArticleSearchForm();
 		articleSearchForm.setTitle("1");
@@ -110,7 +110,7 @@ public class ArticlesFilterTest {
 	}
 
 	@Test
-	public void giveFirstnameThenReceiveArticlesContainFirstnamee () {
+	public void givenFirstname_whenFindArticlesByCriteria_thenReceiveArticlesContainFirstnamee () {
 
 		ArticleSearchForm articleSearchForm = new ArticleSearchForm();
 		articleSearchForm.setFirstname("B");
@@ -124,7 +124,7 @@ public class ArticlesFilterTest {
 	}
 
 	@Test
-	public void giveLastnameThenReceiveArticlesContainLastname () {
+	public void givenLastname_whenFindArticlesByCriteria_thenReceiveArticlesContainLastname () {
 
 		ArticleSearchForm articleSearchForm = new ArticleSearchForm();
 		articleSearchForm.setLastname("Bond");
@@ -138,7 +138,7 @@ public class ArticlesFilterTest {
 	}
 
 	@Test
-	public void giveSectionIdThenReceiveArticlesHasThatSection () {
+	public void givenSectionId_whenFindArticlesByCriteria_thenReceiveArticlesHasThatSection () {
 
 		ArticleSearchForm articleSearchForm = new ArticleSearchForm();
 		articleSearchForm.setSectionId(games.getId());
@@ -152,7 +152,7 @@ public class ArticlesFilterTest {
 	}
 
 	@Test
-	public void giveDateFromThenReceiveArticlesAfterOrEqualPublicationDate () {
+	public void givenDateFrom_whenFindArticlesByCriteria_thenReceiveArticlesAfterOrEqualPublicationDate () {
 
 		ArticleSearchForm articleSearchForm = new ArticleSearchForm();
 		articleSearchForm.setDateFrom(LocalDate.of(2018, 5, 11));
@@ -166,7 +166,7 @@ public class ArticlesFilterTest {
 	}
 
 	@Test
-	public void giveDateToThenReceiveArticlesBeforeOrEqualPublicationDate () {
+	public void givenDateTo_whenFindArticlesByCriteria_thenReceiveArticlesBeforeOrEqualPublicationDate () {
 
 		ArticleSearchForm articleSearchForm = new ArticleSearchForm();
 		articleSearchForm.setDateTo(LocalDate.of(2018, 5, 11));
@@ -180,7 +180,7 @@ public class ArticlesFilterTest {
 	}
 
 	@Test
-	public void givePublishedThenReceiveArticlesPublished () {
+	public void givenPublished_whenFindArticlesByCriteria_thenReceiveArticlesPublished () {
 
 		ArticleSearchForm articleSearchForm = new ArticleSearchForm();
 		articleSearchForm.setPublished(true);
@@ -194,7 +194,7 @@ public class ArticlesFilterTest {
 	}
 
 	@Test
-	public void giveFullSearchFormThenReceiveArticles () {
+	public void givenFullSearchForm_whenFindArticlesByCriteria_thenReceiveArticles () {
 
 		ArticleSearchForm articleSearchForm = new ArticleSearchForm();
 		articleSearchForm.setTitle("2");
