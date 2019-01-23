@@ -1,0 +1,31 @@
+extends ./auth-layout
+
+
+block content
+
+  .container
+    .row
+      .col-sm-9.col-md-7.col-lg-5.mx-auto
+        .card.card-signin.my-5
+          .card-body
+            h5.card-title.text-center Sign In
+
+            if error
+              .alert.alert-danger= error
+
+            if message
+              .alert.alert-success= message
+
+            form.form-signin(action="/login" method="post" name="f" autocomplete="off")
+              input(type="hidden", name=_csrf.parameterName, value=_csrf.token)
+
+              .form-label-group.my-4
+                label(for="inputEmail") Username:
+                input#inputEmail.form-control(type="text", placeholder="Username", autofocus="" name="username" value="admin")
+              .form-label-group.my-4
+                label(for="inputPassword") Password:
+                input#inputPassword.form-control(type="password", placeholder="Password" name="password" value="pass")
+              //-.custom-control.custom-checkbox.mb-3
+                input#customCheck1.custom-control-input(type="checkbox")
+                label.custom-control-label(for="customCheck1") Remember password
+              button.btn.btn-lg.btn-primary.btn-block.text-uppercase(type="submit" name="submit" value="Login") Sign in

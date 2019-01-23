@@ -16,8 +16,8 @@ html
           button(type="button" data-toggle="collapse" data-target="#mainMenu" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation").navbar-toggler
             span.navbar-toggler-icon
 
-          #mainMenu.collapse.navbar-collapse
-            ul.navbar-nav.mr-auto
+          #mainMenu.collapse.navbar-collapse.justify-content-between
+            ul.navbar-nav
               li.nav-item
                 a(href="/panel/user").nav-link Users
               li.nav-item
@@ -26,7 +26,7 @@ html
                 a(href="/panel/section").nav-link Sections
               li.nav-item
                 a(href="/panel/tag").nav-link Tags
-              li.nav-item.dropdown
+              li.nav-item.dropdown.mr-auto
                 a(href="#" data-toggle="dropdown" role="button" aria-haspopup="true" id="submenuDropdown" aria-expanded="false").nav-link.dropdown-toggle Submenu
                 .dropdown-menu(aria-labelledby="submenuDropdown")
                   a(href="#").dropdown-item Link 1
@@ -34,6 +34,9 @@ html
                   .dropdown-divider
                   a(href="#").dropdown-item Link 3
                   a(href="#").dropdown-item Link 4
+            ul.navbar-nav
+              li.nav-item
+                a(href="/logout").nav-link Logout
 
       .container
         section#content
