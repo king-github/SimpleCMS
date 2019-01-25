@@ -20,6 +20,8 @@ public class ExceptionHandlerController {
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     public ModelAndView defaultErrorHandler(HttpServletRequest request, Exception e) {
 
+        e.printStackTrace();
+
         ModelAndView modelAndView = new ModelAndView(DEFAULT_ERROR_VIEW);
 
         modelAndView.addObject("datetime", new Date());
@@ -31,6 +33,8 @@ public class ExceptionHandlerController {
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     @ExceptionHandler(value = {NotFoundException.class})
     public ModelAndView notFoundErrorHandler(HttpServletRequest request, Exception e) {
+
+        e.printStackTrace();
 
         ModelAndView modelAndView = new ModelAndView(NOT_FOUND_ERROR_VIEW);
 

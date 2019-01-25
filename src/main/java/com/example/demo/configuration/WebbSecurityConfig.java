@@ -2,36 +2,40 @@ package com.example.demo.configuration;
 
 import com.example.demo.security.RefererAuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+@ComponentScan("com.example.demo")
 @Configuration
 @EnableWebSecurity
-class WebbSecurityConfig extends WebSecurityConfigurerAdapter {
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
+public class WebbSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private RefererAuthenticationSuccessHandler refererAuthenticationSuccessHandler;
 
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
     @Override
     protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
 
-        PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
 
-        auth.inMemoryAuthentication()
-                .withUser("user1").password(passwordEncoder.encode("pass")).roles("USER")
-                .and()
-                .withUser("user2").password(passwordEncoder.encode("pass")).roles("USER")
-                .and()
-                .withUser("admin").password(passwordEncoder.encode("pass")).roles("ADMIN");
     }
-
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -50,7 +54,7 @@ class WebbSecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .loginPage("/login")
                 .successHandler(refererAuthenticationSuccessHandler)
-                 // .defaultSuccessUrl("/panel")
+                // .defaultSuccessUrl("/panel")
                 .failureUrl("/login?error=true")
                 .permitAll()
 
@@ -62,6 +66,17 @@ class WebbSecurityConfig extends WebSecurityConfigurerAdapter {
                 .invalidateHttpSession(true)
                 .permitAll();
 
+
+        http.headers().frameOptions().disable();
+        http.authorizeRequests()
+                .antMatchers("/h2/**").permitAll();   // for h2 console
+
+    }
+
+    @Bean("passwordEncoder")
+    public static PasswordEncoder passwordEncoder() {
+
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
 }

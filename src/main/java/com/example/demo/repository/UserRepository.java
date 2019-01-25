@@ -16,6 +16,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findById(Long id);
 
     @EntityGraph("User.fetchAll")
+    Optional<User> findByUsername(String username);
+
+    @EntityGraph("User.fetchAll")
     Page<User> findAll(Pageable pageable);
 
 }

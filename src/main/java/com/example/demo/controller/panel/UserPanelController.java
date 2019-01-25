@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -54,6 +55,7 @@ public class UserPanelController {
 
 
     @GetMapping(value = "")
+    @PreAuthorize("hasAuthority('SHOW_USERS')")
     public String index (Model model,
                          @PageableDefault(size = USERS_PER_PAGE) Pageable currentPager,
                          @ModelAttribute(value = "pager", binding = false) PageRequest pager
@@ -72,6 +74,7 @@ public class UserPanelController {
     }
 
     @GetMapping("edit/{id}")
+    @PreAuthorize("hasAuthority('EDIT_USERS')")
     public String edit(Model model,
                        @PathVariable Long id
     ) {
@@ -90,6 +93,7 @@ public class UserPanelController {
     }
 
     @PostMapping("edit/{id}")
+    @PreAuthorize("hasAuthority('EDIT_USERS')")
     public String save(Model model,
                        @PathVariable Long id,
                        @Valid UserForm userForm,

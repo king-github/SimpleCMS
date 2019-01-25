@@ -34,12 +34,12 @@ public class Role {
     public Role() {
     }
 
-    public Role(String name, Privilege... privilegeCollection) {
+    public Role(String name, Collection<Privilege> privilegeCollection) {
         this.name = name;
         addPrivileges(privilegeCollection);
     }
 
-    public Role(String name, String label, Privilege... privilegeCollection) {
+    public Role(String name, String label, Collection<Privilege> privilegeCollection) {
         this(name, privilegeCollection);
         this.label = label;
     }
@@ -96,7 +96,7 @@ public class Role {
         this.privileges = privileges;
     }
 
-    public void addPrivileges(Privilege... privilegesCollection){
+    public void addPrivileges(Collection<Privilege> privilegesCollection){
 
         for (Privilege privilege :privilegesCollection) {
             privileges.add(privilege);
@@ -104,7 +104,7 @@ public class Role {
         }
     }
 
-    public void removePrivileges(Privilege... privilegesCollection){
+    public void removePrivileges(Collection<Privilege> privilegesCollection){
 
         for (Privilege privilege :privilegesCollection) {
             privileges.remove(privilege);

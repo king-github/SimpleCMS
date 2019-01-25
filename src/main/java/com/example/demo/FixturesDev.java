@@ -6,13 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
 
 import javax.transaction.Transactional;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -43,51 +42,92 @@ public class FixturesDev {
     @Autowired
     private SectionRepository sectionRepository;
 
-    private Role articleEditor;
-    private Role tagEditor;
-    private Role sectionEditor;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-    private Author builAuthor(String username, String firstname, String lastname) {
 
-        return new Author(username, username+"@mail.com",
-                User.UserStatus.ACTIVE, "xxx",
-                firstname, lastname);
+    private Role articleEditorRole;
+    private Role tagEditorRole;
+    private Role sectionEditorRole;
+    private Role adminRole;
+    private Role viewerRole;
+
+    private Author buildAuthor(String username, String firstname, String lastname) {
+
+        return new Author(username,
+                    username+"@mail.com",
+                          User.UserStatus.ACTIVE,
+                          passwordEncoder.encode("pass"),
+                          firstname,
+                          lastname);
+    }
+
+    @Transactional
+    private void savePrivileges(){
+
+        privilegeRepository.saveAll(Arrays.asList(
+                new Privilege("SHOW_ARTICLES", "show"),
+                new Privilege("EDIT_ARTICLES", "edit"),
+                new Privilege("DELETE_ARTICLES", "delete"),
+
+                new Privilege("SHOW_TAGS", "show"),
+                new Privilege("EDIT_TAGS", "edit"),
+                new Privilege("DELETE_TAGS", "delete"),
+
+                new Privilege("SHOW_SECTIONS", "show"),
+                new Privilege("EDIT_SECTIONS", "edit"),
+                new Privilege("DELETE_SECTIONS", "delete"),
+
+                new Privilege("SHOW_USERS", "show"),
+                new Privilege("EDIT_USERS", "edit"),
+                new Privilege("DELETE_USERS", "delete")
+        ));
+
     }
 
     @Transactional
     private void saveRoles(){
 
-        articleEditor = new Role("ROLE_ARTICLE_EDITOR", "article editor",
-                new Privilege("SHOW_ARTICLES", "show"),
-                new Privilege("EDIT_ARTICLES", "edit"),
-                new Privilege("DELETE_ARTICLES", "delete"));
+        articleEditorRole = new Role("ROLE_ARTICLE_EDITOR", "article editor",
+                privilegeRepository.findByNameIn("SHOW_ARTICLES", "EDIT_ARTICLES", "DELETE_ARTICLES"));
 
-        tagEditor = new Role("ROLE_TAG_EDITOR", "tag editor",
-                new Privilege("SHOW_TAGS", "show"),
-                new Privilege("EDIT_TAGS", "edit"),
-                new Privilege("DELETE_TAGS", "delete"));
 
-        sectionEditor = new Role("ROLE_SECTION_EDITOR", "section editor",
-                new Privilege("SHOW_SECTIONS", "show"),
-                new Privilege("EDIT_SECTIONS", "edit"),
-                new Privilege("DELETE_SECTIONS", "delete"));
+        tagEditorRole = new Role("ROLE_TAG_EDITOR", "tag editor",
+                privilegeRepository.findByNameIn("SHOW_TAGS", "EDIT_TAGS", "DELETE_TAGS"));
 
-        roleRepository.saveAll(Arrays.asList(articleEditor, tagEditor, sectionEditor));
+        sectionEditorRole = new Role("ROLE_SECTION_EDITOR", "section editor",
+                privilegeRepository.findByNameIn("SHOW_SECTIONS", "EDIT_SECTIONS", "DELETE_SECTIONS"));
+
+        viewerRole = new Role("ROLE_VIEWER", "viewer",
+                privilegeRepository.findByNameIn("SHOW_USERS", "SHOW_ARTICLES", "SHOW_TAGS", "SHOW_SECTIONS"));
+
+        adminRole = new Role("ROLE_ADMIN", "administrator",
+                privilegeRepository.findAll());
+
+
+        roleRepository.saveAll(Arrays.asList(articleEditorRole, tagEditorRole, sectionEditorRole, viewerRole));
 
     }
 
     @Transactional
     private void saveUsers(){
 
-        User user1 = new User("user1", "user1@mail.com", User.UserStatus.ACTIVE, "xxx");
-        User user2 = new User("user2", "user2@mail.com", User.UserStatus.NEW, "xxx");
-        User user3 = new User("user3", "user3@mail.com", User.UserStatus.INACTIVE, "xxx");
+        Author admin1 = new Author("admin", "admin@mail.com", User.UserStatus.ACTIVE,
+                passwordEncoder.encode("pass"), "Linus","Minus");
+        admin1.addRoles(Arrays.asList(adminRole));
 
-        user1.addRoles(Arrays.asList(articleEditor, tagEditor, sectionEditor));
-        user2.addRoles(Arrays.asList(articleEditor, tagEditor));
-        user3.addRoles(Arrays.asList(articleEditor));
+        User user1 = new User("user1", "user1@mail.com",
+                User.UserStatus.ACTIVE, passwordEncoder.encode("pass1"));
+        User user2 = new User("user2", "user2@mail.com",
+                User.UserStatus.NEW, passwordEncoder.encode("pass2"));
+        User user3 = new User("user3", "user3@mail.com",
+                User.UserStatus.INACTIVE, passwordEncoder.encode("pass3"));
 
-        List<User> users = Arrays.asList(user1, user2, user3);
+        user1.addRoles(Arrays.asList(articleEditorRole, tagEditorRole, sectionEditorRole));
+        user2.addRoles(Arrays.asList(articleEditorRole, tagEditorRole));
+        user3.addRoles(Arrays.asList(articleEditorRole));
+
+        List<User> users = Arrays.asList(user1, user2, user3, admin1);
         userRepository.saveAll(users);
     }
 
@@ -98,6 +138,7 @@ public class FixturesDev {
 
         Random random = new Random();
 
+        savePrivileges();
         saveRoles();
         saveUsers();
 
@@ -110,18 +151,18 @@ public class FixturesDev {
         };
 
         Author[] authors= {
-                builAuthor("editor1", "John","Salami"),
-                builAuthor("editor2", "Andrew","Fandy"),
-                builAuthor("editor3", "Elisa","Bill"),
-                builAuthor("editor4", "Jude","Crandy"),
-                builAuthor("editor5", "Mike","Bill"),
-                builAuthor("editor6", "Abdul","Gewnon"),
-                builAuthor("editor7", "Agnes","Frindy"),
-                builAuthor("editor8", "Jony","Pewnon"),
-                builAuthor("editor9", "Sam","Dewnon"),
-                builAuthor("editor10", "Sylvana","Athon"),
-                builAuthor("editor11", "Andy","Brandy"),
-                builAuthor("editor12", "Phil","Bill")
+                buildAuthor("editor1", "John","Salami"),
+                buildAuthor("editor2", "Andrew","Fandy"),
+                buildAuthor("editor3", "Elisa","Bill"),
+                buildAuthor("editor4", "Jude","Crandy"),
+                buildAuthor("editor5", "Mike","Bill"),
+                buildAuthor("editor6", "Abdul","Gewnon"),
+                buildAuthor("editor7", "Agnes","Frindy"),
+                buildAuthor("editor8", "Jony","Pewnon"),
+                buildAuthor("editor9", "Sam","Dewnon"),
+                buildAuthor("editor10", "Sylvana","Athon"),
+                buildAuthor("editor11", "Andy","Brandy"),
+                buildAuthor("editor12", "Phil","Bill")
         };
 
 

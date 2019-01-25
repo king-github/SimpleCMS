@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -11,6 +12,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@ComponentScan("com.example.demo")
 @Configuration
 @EnableWebMvc
 public class MvcConfig implements WebMvcConfigurer {
@@ -42,10 +44,6 @@ public class MvcConfig implements WebMvcConfigurer {
                 CsrfToken token = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
                 if (token != null && view != null) {
                     view.addObject(token.getParameterName(), token);
-
-//                    System.err.printf("token csrf: %s %s : %s",
-//                            token.getParameterName(), token.getHeaderName(), token.getToken());
-
                 }
             }
         };

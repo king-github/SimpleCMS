@@ -6,7 +6,10 @@ import com.example.demo.form.panel.ArticleForm;
 import com.example.demo.form.panel.ArticleFormArticleConverter;
 import com.example.demo.form.panel.ArticleSearchForm;
 import com.example.demo.form.panel.ArticleSearchFormMapConverter;
-import com.example.demo.helper.*;
+import com.example.demo.helper.FormHelperFactory;
+import com.example.demo.helper.OrderModeHelper;
+import com.example.demo.helper.PageSizeHelper;
+import com.example.demo.helper.PagerParamsHelper;
 import com.example.demo.services.ArticleService;
 import com.example.demo.services.SectionService;
 import com.example.demo.services.TagService;
@@ -19,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -33,6 +37,7 @@ import java.util.Optional;
 
 
 @Controller
+
 @RequestMapping("panel/article")
 @SessionAttributes({"articleSearchCriteria","pager"})
 public class ArticlePanelController {
@@ -74,6 +79,7 @@ public class ArticlePanelController {
     }
 
     @GetMapping()
+    @PreAuthorize("hasAuthority('SHOW_ARTICLES')")
     public String index (Model model,
                          @PageableDefault(size = ARTICLES_PER_PAGE) Pageable pageable,
                          @ModelAttribute("articleSearchCriteria") ArticleSearchForm articleSearchCriteria,
@@ -103,10 +109,12 @@ public class ArticlePanelController {
         model.addAttribute("pagerParamsHelper", PagerParamsHelper.of(pageable));
         model.addAttribute("title", "Article list");
 
+        addDefaultAttributeToModel(model);
         return "panel/article/index";
     }
 
     @PostMapping()
+    @PreAuthorize("hasAuthority('SHOW_ARTICLES')")
     public String searchForm (Model model,
                               @ModelAttribute("pager") PageRequest pager,
                               @Valid ArticleSearchForm articleSearchForm,
@@ -126,10 +134,13 @@ public class ArticlePanelController {
         model.addAttribute("form", formHelperFactory.makeErrorFormHelper(bindingResult));
         model.addAttribute("title", "Article list");
 
+        addDefaultAttributeToModel(model);
         return "panel/article/index";
     }
 
+
     @PostMapping("delete")
+    @PreAuthorize("hasAuthority('DELETE_ARTICLES')")
     public String delete (Model model,
                           @RequestParam(required = false) Optional<List<Long>> ids,
                           @ModelAttribute("pager") PageRequest pager,
@@ -142,10 +153,12 @@ public class ArticlePanelController {
         logger.info("Articles - delete {} articles", count);
         String params = PagerParamsHelper.of(pager).build();
 
+        addDefaultAttributeToModel(model);
         return "redirect:/panel/article?"+params;
     }
 
     @GetMapping(value = {"edit/{id}", "edit"})        // for update or create
+    @PreAuthorize("hasAuthority('EDIT_ARTICLES')")
     public String edit (Model model,
                         @PathVariable(required = false) Optional<Long> id) {
 
@@ -159,10 +172,13 @@ public class ArticlePanelController {
         model.addAttribute("article", article);
         model.addAttribute("tags", tagService.getAllTags());
         model.addAttribute("title", "Edit article: ");
+
+        addDefaultAttributeToModel(model);
         return "panel/article/edit";
     }
 
     @PostMapping(value = {"edit/{id}", "edit"})       // for update or create
+    @PreAuthorize("hasAuthority('EDIT_ARTICLES')")
     public String save (Model model,
                         @PathVariable(required = false) Optional<Long> id,
                         @Valid ArticleForm articleForm,
@@ -197,11 +213,13 @@ public class ArticlePanelController {
         model.addAttribute("article", article);
         model.addAttribute("tags", tagService.getAllTags());
         model.addAttribute("title", "Edit article: ");
+
+        addDefaultAttributeToModel(model);
         return "panel/article/edit";
     }
 
 
-    @ModelAttribute
+    //@ModelAttribute               // conflict with PreAuthorize
     private void addDefaultAttributeToModel(Model model) {
         model.addAttribute("sections", sectionService.getAllSections());
         model.addAttribute("dtFormatter", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));

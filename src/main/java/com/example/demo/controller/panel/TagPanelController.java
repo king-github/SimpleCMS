@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -48,8 +49,8 @@ public class TagPanelController {
     private Sort setUpSort() { return  Sort.by("name"); }
 
 
-
     @GetMapping(value = "")
+    @PreAuthorize("hasAuthority('SHOW_TAGS')")
     public String index (Model model,
                          Sort sortCurrent,
                          @ModelAttribute(value = "sort", binding = false) Sort sort
@@ -75,6 +76,7 @@ public class TagPanelController {
 
 
     @PostMapping("delete")
+    @PreAuthorize("hasAuthority('DELETE_TAGS')")
     public String delete(Long tagId,
                          RedirectAttributes redirectAttributes,
                          @ModelAttribute(value = "sort", binding = false) Sort sort
@@ -96,6 +98,7 @@ public class TagPanelController {
     }
 
     @PostMapping("edit")
+    @PreAuthorize("hasAuthority('EDIT_TAGS')")
     public String edit(Model model,
                        @Valid TagForm tagForm,
                        BindingResult bindingResult,
