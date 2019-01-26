@@ -1,5 +1,9 @@
 package com.example.demo.entity;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
@@ -15,7 +19,7 @@ import java.util.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public class User {
+public class User implements UserDetails {
 
     public enum UserStatus {
         UNDEFINED, NEW, ACTIVE, INACTIVE;
@@ -51,7 +55,8 @@ public class User {
                     name = "role_id", referencedColumnName = "id"))
     private Set<Role> roles = new HashSet<>();
 
-
+    @Transient
+    private List<GrantedAuthority> authorities = new ArrayList<>();
 
     public User() {
     }
@@ -71,16 +76,73 @@ public class User {
         this.hashedPassword = hashedPassword;
     }
 
+
+    public String getFullName() {
+
+        return username;
+    }
+
+    public void setUpAuthorities() {
+
+        List<GrantedAuthority> auths = new ArrayList<>();
+        getRoles().stream().forEach(role -> {
+            auths.add(new SimpleGrantedAuthority(role.getName()));
+            role.getPrivileges().stream()
+                    .map(Privilege::getName)
+                    .map(SimpleGrantedAuthority::new)
+                    .forEach(authority -> auths.add(authority));
+        });
+        authorities = auths;
+    }
+
+    @Override
+    public Collection<GrantedAuthority> getAuthorities() {
+
+        return authorities;
+    }
+
+    public boolean hasAuthority(String authorityName) {
+
+        return authorities.stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(authorityName));
+    }
+
+    @Override
+    public String getPassword() {
+        return hashedPassword;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return status ==  UserStatus.ACTIVE;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return status ==  UserStatus.ACTIVE;
+    }
+
+
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
     }
 
     public void setUsername(String username) {

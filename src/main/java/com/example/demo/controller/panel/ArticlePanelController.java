@@ -2,6 +2,7 @@ package com.example.demo.controller.panel;
 
 import com.example.demo.controller.front.ArticleController;
 import com.example.demo.entity.Article;
+import com.example.demo.entity.User;
 import com.example.demo.form.panel.ArticleForm;
 import com.example.demo.form.panel.ArticleFormArticleConverter;
 import com.example.demo.form.panel.ArticleSearchForm;
@@ -22,13 +23,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -225,5 +230,24 @@ public class ArticlePanelController {
         model.addAttribute("dtFormatter", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         model.addAttribute("sortModeHelper", sortModeHelper);
         model.addAttribute("pageSizeHelper", pageSizeHelper);
+    }
+
+    @ExceptionHandler(value = {AccessDeniedException.class})
+    public ModelAndView notFoundErrorHandler(HttpServletRequest request, Exception exception,
+                                             RedirectAttributes redirectAttributes,
+                                             Authentication authentication) {
+
+        PageRequest pager = (PageRequest) request.getSession().getAttribute("pager");
+        redirectAttributes.addFlashAttribute("alertDanger","Access denied. You cannot perform this operation.");
+
+        if (authentication != null && authentication.getPrincipal() instanceof User) {
+
+            User user = (User) authentication.getPrincipal();
+
+            if (user.hasAuthority("SHOW_ARTICLES"))
+                return new ModelAndView("redirect:/panel/article?" + PagerParamsHelper.of(pager).build());
+
+        }
+        return  new ModelAndView("redirect:/panel");
     }
 }

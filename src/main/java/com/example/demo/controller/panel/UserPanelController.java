@@ -16,13 +16,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @Controller
@@ -133,6 +137,25 @@ public class UserPanelController {
         model.addAttribute("title", "User edit form");
 
         return "panel/user/edit";
+    }
+
+    @ExceptionHandler(value = {AccessDeniedException.class})
+    public ModelAndView notFoundErrorHandler(HttpServletRequest request, Exception exception,
+                                             RedirectAttributes redirectAttributes,
+                                             Authentication authentication) {
+
+        PageRequest pager = (PageRequest) request.getSession().getAttribute("pager");
+        redirectAttributes.addFlashAttribute("alertDanger","Access denied. You cannot perform this operation.");
+
+        if (authentication != null && authentication.getPrincipal() instanceof User) {
+
+            User user = (User) authentication.getPrincipal();
+
+            if (user.hasAuthority("SHOW_USERS"))
+                return new ModelAndView("redirect:/panel/user?" + PagerParamsHelper.of(pager).build());
+
+        }
+        return  new ModelAndView("redirect:/panel");
     }
 
 }

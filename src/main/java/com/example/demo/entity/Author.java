@@ -40,13 +40,11 @@ public class Author extends User {
         this.lastname = lastname;
     }
 
-//    public Long getId() {
-//        return id;
-//    }
-//
-//    public void setId(Long id) {
-//        this.id = id;
-//    }
+    @Override
+    public String getFullName() {
+
+        return String.join(" ", firstname, lastname);
+    }
 
     public String getFirstname() {
         return firstname;

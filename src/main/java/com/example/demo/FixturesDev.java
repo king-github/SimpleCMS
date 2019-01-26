@@ -112,6 +112,10 @@ public class FixturesDev {
     @Transactional
     private void saveUsers(){
 
+        Author viewer1 = new Author("viewer", "viewer@mail.com", User.UserStatus.ACTIVE,
+                passwordEncoder.encode("pass"), "See","You");
+        viewer1.addRoles(Arrays.asList(viewerRole));
+
         Author admin1 = new Author("admin", "admin@mail.com", User.UserStatus.ACTIVE,
                 passwordEncoder.encode("pass"), "Linus","Minus");
         admin1.addRoles(Arrays.asList(adminRole));
@@ -127,7 +131,7 @@ public class FixturesDev {
         user2.addRoles(Arrays.asList(articleEditorRole, tagEditorRole));
         user3.addRoles(Arrays.asList(articleEditorRole));
 
-        List<User> users = Arrays.asList(user1, user2, user3, admin1);
+        List<User> users = Arrays.asList(user1, user2, user3, admin1, viewer1);
         userRepository.saveAll(users);
     }
 
@@ -188,7 +192,7 @@ public class FixturesDev {
         }
 
         sectionRepository.saveAll(Arrays.asList(sections));
-
+        sectionRepository.save(new Section("Empty section"));
         tagRepository.saveAll(Arrays.asList(new Tag("Empty"), new Tag("Null")));
     }
 }

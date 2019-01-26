@@ -2,6 +2,8 @@ package com.example.demo.controller.panel;
 
 import com.example.demo.dto.SectionWithQuantityDto;
 import com.example.demo.entity.Section;
+import com.example.demo.entity.User;
+import com.example.demo.error.NotFoundException;
 import com.example.demo.form.panel.SectionForm;
 import com.example.demo.form.panel.SectionFormSectionConverter;
 import com.example.demo.helper.FormHelperFactory;
@@ -13,13 +15,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Optional;
 
@@ -121,6 +128,26 @@ public class SectionPanelController {
 
         logger.info("Section list - save section with id: {}", result.getId() );
         return "redirect:/panel/section?" +PagerParamsHelper.of(sort).build();
+    }
+
+
+
+    @ExceptionHandler(value = {AccessDeniedException.class})
+    public ModelAndView notFoundErrorHandler(HttpServletRequest request, Exception exception,
+                                             RedirectAttributes redirectAttributes,
+                                             Authentication authentication) {
+
+        Sort sort = (Sort) request.getSession().getAttribute("sort");
+        redirectAttributes.addFlashAttribute("alertDanger","Access denied. You cannot perform this operation.");
+
+        if (authentication != null && authentication.getPrincipal() instanceof User) {
+
+            User user = (User) authentication.getPrincipal();
+
+            if (user.hasAuthority("SHOW_SECTIONS"))
+                return new ModelAndView("redirect:/panel/section?" + PagerParamsHelper.of(sort).build());
+        }
+        return  new ModelAndView("redirect:/panel");
     }
 
 }
