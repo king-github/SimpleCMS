@@ -31,6 +31,12 @@ public class FormHelperMap implements FormHelper {
     }
 
     @Override
+    public List<String> getErrorsForForm() {
+
+        return new ArrayList<>();
+    }
+
+    @Override
     public Object getValueFor(String fieldName) {
 
         return map.get(fieldName);
@@ -52,6 +58,22 @@ public class FormHelperMap implements FormHelper {
     public String getValidCss(String fieldName, String validCss, String invalidCss) {
 
         return (isValid(fieldName)) ? validCss : invalidCss;
+    }
+
+    @Override
+    public boolean isGlobalValid() {
+        return true;
+    }
+
+    @Override
+    public boolean isGlobalNotValid() {
+        return false;
+    }
+
+    @Override
+    public String getValidCss(String validCss, String invalidCss) {
+
+        return (isGlobalValid()) ? validCss : invalidCss;
     }
 
 }

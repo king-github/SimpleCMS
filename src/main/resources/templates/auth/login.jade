@@ -7,9 +7,9 @@ block content
     .row
       .col-sm-9.col-md-7.col-lg-5.mx-auto
         .card.card-signin.my-5
+          .card-header.text-center
+            h5.card-title Sign in
           .card-body
-            h5.card-title.text-center Sign In
-
             if error
               .alert.alert-danger= error
 
@@ -29,3 +29,7 @@ block content
                 input#customCheck1.custom-control-input(type="checkbox")
                 label.custom-control-label(for="customCheck1") Remember password
               button.btn.btn-lg.btn-primary.btn-block.text-uppercase(type="submit" name="submit" value="Login") Sign in
+
+          .card-footer
+            span Don't have an account?
+              a(href="/register")  Register here.

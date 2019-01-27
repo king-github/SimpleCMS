@@ -1,0 +1,86 @@
+extends ./auth-layout
+
+
+block content
+
+  .container
+    .row
+      .col-sm-9.col-md-7.col-lg-5.mx-auto
+        .card.card-signup.my-5
+          .card-header.text-center
+            h5.card-title Sign up
+          .card-body
+
+            if error
+              .alert.alert-danger= error
+
+            if message
+              .alert.alert-success= message
+
+            form.form-signin(action="" method="post" autocomplete="off")
+              input(type="hidden", name=_csrf.parameterName, value=_csrf.token)
+
+              .form-label-group.my-4
+                label(for="inputUsername") Username:
+                input#inputUsername.form-control(type="text" placeholder="Username" autofocus=""
+                                                class=form.getValidCss("username", "form-control", "form-control is-invalid")
+                                                name="username" value=form.getValueFor("username"))
+                .invalid-feedback
+                  for err in form.getErrorsFor("username")
+                    span=err
+
+              .form-label-group.my-4
+                label(for="inputEmail") Email:
+                input#inputEmail.form-control(type="text" placeholder="Email"
+                                                class=form.getValidCss("email", "form-control", "form-control is-invalid")
+                                                name="email" value=form.getValueFor("email"))
+                .invalid-feedback
+                  for err in form.getErrorsFor("email")
+                    span=err
+
+              .form-label-group.my-4
+                label(for="inputFirstname") Firstname:
+                input#inputFirstname.form-control(type="text" placeholder="Firstname"
+                                                class=form.getValidCss("firstname", "form-control", "form-control is-invalid")
+                                                name="firstname" value=form.getValueFor("firstname"))
+                .invalid-feedback
+                  for err in form.getErrorsFor("firstname")
+                    span=err
+
+              .form-label-group.my-4
+                label(for="inputLastname") Lastname:
+                input#inputLastname.form-control(type="text" placeholder="Lastname"
+                                                class=form.getValidCss("lastname", "form-control", "form-control is-invalid")
+                                                name="lastname" value=form.getValueFor("lastname"))
+                .invalid-feedback
+                  for err in form.getErrorsFor("lastname")
+                    span=err
+
+              .form-label-group.my-4
+                label(for="inputPassword") Password:
+                input#inputPassword.form-control(type="password", placeholder="Password"
+                                                class=form.getValidCss("password", "form-control", "form-control is-invalid")
+                                                name="password" value=form.getValueFor("password"))
+                .invalid-feedback
+                  for err in form.getErrorsFor("password")
+                    span=err
+
+              .form-label-group.my-4
+                label(for="inputConfirmPassword") Confirm password:
+                input#inputConfirmPassword.form-control(type="password", placeholder="Confirm password"
+                                                class=form.getValidCss("confirmPassword", "form-control", "form-control is-invalid")
+                                                name="confirmPassword" value=form.getValueFor("confirmPassword"))
+                .invalid-feedback
+                  for err in form.getErrorsFor("confirmPassword")
+                    span=err
+
+              .invalid-feedback.my-4(class=form.getValidCss("", "d-block"))
+                  for err in form.getErrorsForForm()
+                    span=err
+
+              button.btn.btn-lg.btn-primary.btn-block.text-uppercase(type="submit" name="submit" value="signup") Sign up
+
+          .card-footer
+            span Do you have an account?
+              a(href="/login")  Sign in here.
+

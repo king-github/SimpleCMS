@@ -3,7 +3,6 @@ package com.example.demo.configuration;
 import com.example.demo.security.RefererAuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -15,7 +14,6 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-@ComponentScan("com.example.demo")
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
@@ -45,6 +43,10 @@ public class WebbSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .authorizeRequests()
                 .antMatchers("/*").permitAll()
+
+                .antMatchers("/h2/**").permitAll()   // for h2 console
+
+                .antMatchers("/register/*").permitAll()
                 .antMatchers("/public/**").permitAll()
                 .antMatchers("/panel").permitAll()
                 .antMatchers("/panel/**").authenticated()
@@ -67,9 +69,7 @@ public class WebbSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll();
 
 
-        http.headers().frameOptions().disable();
-        http.authorizeRequests()
-                .antMatchers("/h2/**").permitAll();   // for h2 console
+        http.headers().frameOptions().disable();  // for h2 console
 
     }
 

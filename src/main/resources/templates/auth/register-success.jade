@@ -1,0 +1,20 @@
+extends ./auth-layout
+
+
+block prepend content-header
+  h3.display-4.py-4
+
+block content
+
+  .card.text-center
+    .card-header
+      span= title
+
+    .card-body
+      .card-body
+        h5.card-title= title
+        p.card-text Your account have to activated by administrator. It may take a some time.
+
+    .card-footer
+       span Do you have an account?
+         a(href="/login")  Sign in here.
