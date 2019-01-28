@@ -2,7 +2,7 @@
 
 ## Used modules and frameworks:
 - java 8
-- spring boot 2 (currently 2.08)
+- spring boot 2 (currently 2.0.8)
 - JPA (on Hibernate) with spring-boot-data
 - spring security users with roles and authorities
 - Jade (PUG) not much popular but very elegant view engine
@@ -32,7 +32,7 @@ mvn -e test
 - Panel of CMS: [localhost:8080/panel](http://localhost:8080/panel)
 
 **Profiles:**
-- dev - h2 database - config in application-dev2.properties
+- dev - h2 database - config in application-dev.properties
 - dev2 - mySQL(MariaDB) - config in application-dev2.properties
 
 ## To do:
