@@ -25,7 +25,7 @@ import java.util.Objects;
                 "LEFT JOIN tag t ON t.ID = at.tag_id " +
                 "LEFT JOIN article a ON a.ID = at.article_id " +
                 "WHERE a.published = TRUE " +
-                "GROUP BY t.name " +
+                "GROUP BY t.id " +
                 "ORDER BY quantity DESC",
         resultSetMapping = "tagDtoMapping")
 

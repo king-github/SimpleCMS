@@ -32,8 +32,9 @@ mvn -e test
 - Panel of CMS: [localhost:8080/panel](http://localhost:8080/panel)
 
 **Profiles:**
-- dev - h2 database - config in application-dev.properties
-- dev2 - mySQL(MariaDB) - config in application-dev2.properties
+- dev  - storage in h2 database - config in application-dev.properties
+- dev2 - storage in mySQL(MariaDB) - config in application-dev2.properties
+- dev3 - storage in postgreSQL - config in application-dev3.properties
 
 ## To do:
 - Increase test coverage

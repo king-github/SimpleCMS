@@ -42,7 +42,7 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
                  "RIGHT JOIN tag t ON t.ID = at.tag_id " +
                  "LEFT JOIN article a ON a.ID = at.article_id " +
                  //"WHERE a.published IS NULL " +  // count tags related with 0 articles
-                 "GROUP BY t.name " ,
+                 "GROUP BY t.id " ,
             countQuery = "SELECT COUNT(*) FROM tag AS t",
             nativeQuery = true)
     List<Object[]> countArticlesGroupedByTagNameResultAsRaw(@Param("pageable") Pageable pageable);
@@ -53,7 +53,7 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
             "LEFT JOIN article a ON a.ID = at.article_id " +
             "WHERE a.published = TRUE " +
             "OR a.published IS NULL " +  // count tags related with 0 articles
-            "GROUP BY t.name " ,
+            "GROUP BY t.id " ,
             countQuery = "SELECT COUNT(*) FROM tag AS t",
             nativeQuery = true)
     List<Object[]> countArticlesGroupedByTagNameAndPublishedResultAsRaw(@Param("pageable") Pageable pageable);

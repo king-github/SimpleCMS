@@ -18,6 +18,7 @@ import java.util.*;
 
 
 @Entity
+@Table(name = "xuser")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class User implements UserDetails {
 
