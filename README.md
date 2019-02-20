@@ -1,16 +1,26 @@
 # Simple Content Management System
 
+Look into wiki to see screenshots.   
+
 ## Used modules and frameworks:
 - java 8
 - spring boot 2 (currently 2.0.8)
 - JPA (on Hibernate) with spring-boot-data
 - spring security users with roles and authorities
-- Jade (PUG) not much popular but very elegant view engine
+- Jade (PUG) not much popular but very elegant template engine
 
 ## Compile and run:
 
 **Run with maven:**
 
+Running with profile 'dev' you don't need outer database 
+(will be used H2). For other profiles '*dev2*'(mySQL), '*dev3*' 
+(PostgreSQL) you need configure db connection in 
+application-devX.properties. The database is created 
+every time the app is started. You can change it in properties file.
+
+Data for pre-filling db is in FixturesDev class. You can sign in to 
+panel with username *admin* and password *pass*.    
 ```
 mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
@@ -42,3 +52,5 @@ mvn -e test
 - Add images for articles
 - Add full csrf support (Jade not supports out of the box csrf)
 - Refactor some class
+
+
