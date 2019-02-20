@@ -29,7 +29,7 @@ block content
 
      .form-group.row
        .mb-2.col-md-4
-          label(for="inputStatus") Section:
+          label(for="inputStatus") Status:
           select(id="inputStatus" name="status").form-control
             for status in statuses
                if status == form.getValueFor("status")
