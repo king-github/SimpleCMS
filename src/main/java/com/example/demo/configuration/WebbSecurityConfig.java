@@ -42,14 +42,15 @@ public class WebbSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable() // TODO add csrf to all forms
 
                 .authorizeRequests()
-                .antMatchers("/*").permitAll()
 
                 .antMatchers("/h2/**").permitAll()   // for h2 console
 
                 .antMatchers("/register/*").permitAll()
-                .antMatchers("/public/**").permitAll()
+                .antMatchers("/public/**/*").permitAll()
                 .antMatchers("/panel").permitAll()
-                .antMatchers("/panel/**").authenticated()
+                .antMatchers("/panel/**/*").authenticated()
+                .antMatchers("/").permitAll()
+                .antMatchers("/**/*").permitAll()
                 .anyRequest().authenticated()
 
                 .and()
