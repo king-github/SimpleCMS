@@ -25,6 +25,7 @@ public class Article {
     private Long id;
     private LocalDateTime publicationDate;
     private String title;
+    @Column(name = "xlead")
     private String lead;
     private String content;
 

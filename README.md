@@ -43,8 +43,9 @@ mvn -e test
 
 **Profiles:**
 - dev  - storage in h2 database - config in application-dev.properties
-- dev2 - storage in mySQL(MariaDB) - config in application-dev2.properties
+- dev2 - storage in MariaDB - config in application-dev2.properties
 - dev3 - storage in postgreSQL - config in application-dev3.properties
+- dev4 - storage in mySQL - config in application-dev4.properties
 
 ## To do:
 - Increase test coverage
