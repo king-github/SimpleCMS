@@ -3,6 +3,7 @@ package com.example.demo;
 import com.example.demo.entity.*;
 import com.example.demo.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
@@ -22,6 +23,9 @@ import java.util.stream.Stream;
 public class FixturesDev {
 
     private final int NUM_OF_ARTICLES = 55;
+
+    @Value("${initial.fill.db:false}")
+    private boolean initialFillDb;
 
     @Autowired
     private UserRepository userRepository;
@@ -139,6 +143,8 @@ public class FixturesDev {
     @EventListener
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
+
+        if (!initialFillDb) return;
 
         Random random = new Random();
 
